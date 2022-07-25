@@ -60,7 +60,7 @@ public:
 		if (itemid == -1036635990)
 			return;
 		uintptr_t unity_class = memory::read_chain(item_def, { 0x10, 0x30 });
-		uintptr_t itemModProjectile = get_component(unity_class, "ItemModProjectile");
+		uintptr_t itemModProjectile = get_component(unity_class, _("ItemModProjectile"));
 		memory::write<float>(itemModProjectile + 0x30, 0.f);
 	}
 
@@ -75,7 +75,7 @@ public:
 
 		uintptr_t magazine = memory::read<uintptr_t>(base_projectile + oMagazine);
 		uintptr_t unity_class = memory::read_chain(magazine, { 0x20, 0x10, 0x30 });
-		uintptr_t itemModProjectile = get_component(unity_class, "ItemModProjectile");
+		uintptr_t itemModProjectile = get_component(unity_class, _("ItemModProjectile"));
 
 		info.velocity = memory::read<float>(itemModProjectile + 0x34);
 
@@ -84,7 +84,7 @@ public:
 		uintptr_t unk0 = memory::read<uintptr_t>(projectileObject + 0x18);
 		uintptr_t unk1 = memory::read<uintptr_t>(unk0 + 0x10);
 
-		uintptr_t projectile = get_component(unk1, "Projectile");
+		uintptr_t projectile = get_component(unk1, _("Projectile"));
 
 		Vector2 projectile_info = memory::read<Vector2>(projectile + 0x24);
 
@@ -101,7 +101,7 @@ public:
 			uintptr_t child_entity = memory::read<uintptr_t>(children_list + (0x20 + (i * 0x8)));
 			std::string child_entity_name = memory::read_str(memory::read<uintptr_t>(child_entity + 0x10));
 
-			if (child_entity_name == "ProjectileWeaponMod")
+			if (child_entity_name == _("ProjectileWeaponMod"))
 			{
 				ProjectileWeaponModModifier velocity_scalar = memory::read<ProjectileWeaponModModifier>((child_entity + 0x180));
 				if (velocity_scalar.enabled)

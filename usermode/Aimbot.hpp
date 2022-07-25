@@ -94,7 +94,7 @@ namespace Aim
 	void fill_player_list()
 	{
 		vars::playerList.clear();
-		uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
+		uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
 		int sz = memory::read<int>(buffer_list + 0x10);
 		uintptr_t p_object_list = memory::read<uintptr_t>(buffer_list + 0x18);
 		std::vector<uintptr_t> object_list = List::get_list(p_object_list, sz);

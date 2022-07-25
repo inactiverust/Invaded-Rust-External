@@ -34,8 +34,12 @@ _CETHREAD* find_desired_thread(_CEPROCESS* process)
 }
 
 #if release
-extern "C" NTSTATUS DriverEntry()
+DRIVER_UNLOAD UnloadDriver;
+
+extern "C" NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject, _In_ PUNICODE_STRING RegistryPath)
 {
+	DriverObject->DriverUnload = UnloadDriver;
+
 	_CEPROCESS* desired_proc = find_process_by_name("loader.exe");
 
 	if (!desired_proc)
@@ -51,18 +55,32 @@ extern "C" NTSTATUS DriverEntry()
 
 	return STATUS_SUCCESS;
 }
-#else
-extern "C" NTSTATUS DriverEntry()
+
+VOID UnloadDriver(PDRIVER_OBJECT pDriverObject)
 {
+	return;
+}
+#else
+DRIVER_UNLOAD UnloadDriver;
+
+extern "C" NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject, _In_ PUNICODE_STRING RegistryPath)
+{
+	DriverObject->DriverUnload = UnloadDriver;
+
 	_CEPROCESS* desired_proc = find_process_by_name("usermode.exe");
 
-	if (!desired_proc)
-		return STATUS_SUCCESS;
+	if (desired_proc)
+	{
+		_CETHREAD* desired_thread = find_desired_thread(desired_proc);
 
-	_CETHREAD* desired_thread = find_desired_thread(desired_proc);
-
-	desired_thread->get_kthread()->set_previous_mode(0);
+		desired_thread->get_kthread()->set_previous_mode(0);
+	}
 
 	return STATUS_SUCCESS;
+}
+
+VOID UnloadDriver(PDRIVER_OBJECT pDriverObject)
+{
+	return;
 }
 #endif

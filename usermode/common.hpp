@@ -7,3 +7,6 @@
 #include <chrono>
 #include <Tlhelp32.h>
 #include <iostream>
+#include <filesystem>
+
+#include "xor.hpp"

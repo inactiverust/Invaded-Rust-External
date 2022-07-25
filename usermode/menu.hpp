@@ -77,7 +77,7 @@ namespace menu
 			{
 				ImGui::Begin("Invaded", 0, dwFlags);
 				{
-					if (ImGui::SmallButton("Click when in"))
+					if (ImGui::SmallButton("Open Game and Then Click Me"))
 						settings::connected = true;
 				}
 				ImGui::End();

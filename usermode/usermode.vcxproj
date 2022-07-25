@@ -81,6 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>.\auth\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,8 +145,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>version.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>version.lib;d3d9.lib;library_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)/Lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -161,6 +163,8 @@
   <ItemGroup>
     <ClInclude Include="AdminConVar.hpp" />
     <ClInclude Include="Aimbot.hpp" />
+    <ClInclude Include="auth\auth.hpp" />
+    <ClInclude Include="auth\skStr.h" />
     <ClInclude Include="BasePlayer.hpp" />
     <ClInclude Include="features.hpp" />
     <ClInclude Include="globals.hpp" />
@@ -183,6 +187,7 @@
     <ClInclude Include="PlayerModel.hpp" />
     <ClInclude Include="PlayerWalkMovement.hpp" />
     <ClInclude Include="Sky.hpp" />
+    <ClInclude Include="xor.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

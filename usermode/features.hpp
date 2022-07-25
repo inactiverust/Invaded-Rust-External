@@ -16,7 +16,7 @@ namespace features
 	bool disable_commands()
 	{
 		int counter = 0;
-		uintptr_t command_list = memory::read_chain(pointers::game_assembly, { oConsoleSystem, 0xB8, 0x10 });
+		uintptr_t command_list = memory::read_chain(pointers::game_assembly, { classes::oConsoleSystem, 0xB8, 0x10 });
 		int sz = memory::read<int>(command_list + 0x18);
 		for (int i = 0; i < sz; i++)
 		{
@@ -24,7 +24,7 @@ namespace features
 			uintptr_t p_command_name = memory::read<uintptr_t>(command + 0x10);
 			wchar_t command_name[36] = { '\0' };
 			memory::copy_memory(p_command_name + 0x14, (uintptr_t)&command_name, sizeof(command_name));
-			if (wcscmp(command_name, L"noclip") == 0 || wcscmp(command_name, L"camspeed") == 0 || wcscmp(command_name, L"camlerp") == 0)
+			if (wcscmp(command_name, _(L"noclip")) == 0 || wcscmp(command_name, _(L"camspeed")) == 0 || wcscmp(command_name, _(L"camlerp")) == 0)
 			{
 				counter++;
 				memory::write<bool>(command + oAllowRunFromServer, false);

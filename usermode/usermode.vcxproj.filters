@@ -14,6 +14,9 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{72df033e-3c52-4742-ab76-9523bb22841e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\auth">
+      <UniqueIdentifier>{0269800f-c325-461b-9970-14a3d64afb67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +116,15 @@
     </ClInclude>
     <ClInclude Include="menu.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xor.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="auth\auth.hpp">
+      <Filter>Source Files\auth</Filter>
+    </ClInclude>
+    <ClInclude Include="auth\skStr.h">
+      <Filter>Source Files\auth</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

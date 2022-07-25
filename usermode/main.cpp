@@ -4,15 +4,20 @@
 #include "features.hpp"
 #include "menu.hpp"
 
+#include "auth/skStr.h"
+#include "auth/auth.hpp"
+
 bool should_exit;
 
-#define release false;
+#define check_rust true;
+#define check_auth true;
+#define using_signed true;
 
 bool get_local_player()
 {
-	uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
+	uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
 	if(!buffer_list)
-		buffer_list = memory::read_chain(pointers::game_assembly, { oBaseEntity, 0xB8, 0x40, 0x10, 0x28 });
+		buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x40, 0x10, 0x28 });
 	int sz = memory::read<int>(buffer_list + 0x10);
 	uintptr_t p_object_list = memory::read<uintptr_t>(buffer_list + 0x18);
 	std::vector<uintptr_t> object_list = List::get_list(p_object_list, sz);
@@ -38,11 +43,11 @@ void setup()
 {
 	misc::height = GetSystemMetrics(SM_CYSCREEN);
 	misc::width = GetSystemMetrics(SM_CXSCREEN);
-	pointers::admin_convar_static = reinterpret_cast<AdminConVar*>(memory::read_chain(pointers::game_assembly, { oAdminConVar, 0xB8 }));
-	pointers::tod_sky_instance = reinterpret_cast<Sky*>(memory::read_chain(pointers::game_assembly, { oTODSky, 0xB8, 0x0, 0x10, 0x20 }));
-	pointers::fov_pointer = memory::read_chain(pointers::game_assembly, { oGraphicConVar, 0xB8 });
-	pointers::view_matrix_pointer = reinterpret_cast<Matrix4x4*>(memory::read_chain(pointers::game_assembly, { oMainCamera, 0xB8, 0x0, 0x10 }) + 0x2E4);
-	pointers::occlusion_culling_static = reinterpret_cast<OcclusionCulling*>(memory::read_chain(pointers::game_assembly, { oOcclusionCulling, 0xB8 }));
+	pointers::admin_convar_static = reinterpret_cast<AdminConVar*>(memory::read_chain(pointers::game_assembly, { classes::oAdminConVar, 0xB8 }));
+	pointers::tod_sky_instance = reinterpret_cast<Sky*>(memory::read_chain(pointers::game_assembly, { classes::oTODSky, 0xB8, 0x0, 0x10, 0x20 }));
+	pointers::fov_pointer = memory::read_chain(pointers::game_assembly, { classes::oGraphicConVar, 0xB8 });
+	pointers::view_matrix_pointer = reinterpret_cast<Matrix4x4*>(memory::read_chain(pointers::game_assembly, { classes::oMainCamera, 0xB8, 0x0, 0x10 }) + 0x2E4);
+	pointers::occlusion_culling_static = reinterpret_cast<OcclusionCulling*>(memory::read_chain(pointers::game_assembly, { classes::oOcclusionCulling, 0xB8 }));
 	pointers::occlusion_culling_static->disable_animals();
 }
 
@@ -82,18 +87,41 @@ void cheat_entry()
 	}
 }
 
+void load_drv()
+{
+	std::string path = std::filesystem::current_path().string();
+	auth::download_file("825848", "invdriver.sys");
+	system(("sc create invaded type= kernel binPath= " + path + "\\invdriver.sys").c_str());
+	system("sc start invaded");
+	Sleep(100);
+	system("sc stop invaded");
+	remove("invdriver.sys");
+	system("sc remove invaded");
+}
+
 int main()
 {
-#if release
-	if (memory::get_pid("RustClient.exe"))
+#if check_rust
+	if (memory::get_pid(_("RustClient.exe")))
 	{
 		std::cout << "Close Rust . . .";
 		Sleep(3000);
 		exit(3);
 	}
+#endif
+
+#if check_auth
+	auth::do_auth();
+#endif
+
+#if check_rust
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
 
+#if using_signed
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)load_drv, 0, 0, 0);
+#endif;
+	Sleep(1000);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)menu::render, 0, 0, 0);
 
@@ -103,9 +131,9 @@ int main()
 		Sleep(1);
 	}
 
-	vars::target_pid = memory::get_pid("RustClient.exe");
+	vars::target_pid = memory::get_pid(_("RustClient.exe"));
 
-	pointers::game_assembly = memory::find_base_address(vars::target_pid, L"GameAssembly.dll");
+	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));
 	
 	memory::setup(vars::target_pid);
 
