@@ -8,7 +8,7 @@
 
 #include "utilities.hpp"
 
-#define release false;
+#define release true;
 
 _CEPROCESS* find_process_by_name(const char* proc_name)
 {
@@ -39,6 +39,8 @@ DRIVER_UNLOAD UnloadDriver;
 extern "C" NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject, _In_ PUNICODE_STRING RegistryPath)
 {
 	DriverObject->DriverUnload = UnloadDriver;
+
+	UNREFERENCED_PARAMETER(RegistryPath);
 
 	_CEPROCESS* desired_proc = find_process_by_name("loader.exe");
 

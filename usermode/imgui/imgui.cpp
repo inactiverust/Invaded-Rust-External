@@ -11069,7 +11069,7 @@ bool ImGui::HotKey(const char* label, int* k, const ImVec2& size_arg)
 
     char buf_display[64] = "None";
 
-    ImGui::RenderFrame(frame_bb.Min, frame_bb.Max, ImGui::GetColorU32(ImVec4(0.20f, 0.25f, 0.30f, 1.0f)), true, style.FrameRounding);
+    ImGui::RenderFrame(frame_bb.Min, frame_bb.Max, ImGui::GetColorU32(ImVec4(0.612, 0.f, 0.f, 1.f)), true, style.FrameRounding);
 
     if (*k != 0 && g.ActiveId != id) {
         strcpy_s(buf_display, KeyNames[*k]);

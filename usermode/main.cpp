@@ -90,13 +90,14 @@ void cheat_entry()
 void load_drv()
 {
 	std::string path = std::filesystem::current_path().string();
-	auth::download_file("825848", "invdriver.sys");
+	auth::download_file("206642", "invdriver.sys");
 	system(("sc create invaded type= kernel binPath= " + path + "\\invdriver.sys").c_str());
 	system("sc start invaded");
-	Sleep(100);
+	Sleep(300);
 	system("sc stop invaded");
 	remove("invdriver.sys");
-	system("sc remove invaded");
+	system("sc delete invaded");
+	system("CLS");
 }
 
 int main()
@@ -104,7 +105,7 @@ int main()
 #if check_rust
 	if (memory::get_pid(_("RustClient.exe")))
 	{
-		std::cout << "Close Rust . . .";
+		std::cout << _("Close Rust . . .");
 		Sleep(3000);
 		exit(3);
 	}
@@ -115,12 +116,19 @@ int main()
 #endif
 
 #if check_rust
+	if (memory::get_pid(_("RustClient.exe")))
+	{
+		std::cout << _("Close Rust . . .");
+		Sleep(3000);
+		exit(3);
+	}
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
 
 #if using_signed
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)load_drv, 0, 0, 0);
 #endif;
+
 	Sleep(1000);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)menu::render, 0, 0, 0);
@@ -135,6 +143,13 @@ int main()
 
 	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));
 	
+	if (!pointers::game_assembly)
+	{
+		ShowWindow(GetConsoleWindow(), SW_SHOW);
+		std::cout << _("Error 1");
+		Sleep(30000);
+		exit(3);
+	}
 	memory::setup(vars::target_pid);
 
 	should_exit = true;

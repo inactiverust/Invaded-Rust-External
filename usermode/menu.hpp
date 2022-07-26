@@ -34,7 +34,7 @@ namespace menu
 		std::string rand = random_string();
 		WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, rand.c_str(), NULL };
 		::RegisterClassEx(&wc);
-		HWND hwnd = ::CreateWindow(wc.lpszClassName, rand.c_str(), WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX, 50, 50, 400, 600, NULL, NULL, wc.hInstance, NULL);
+		HWND hwnd = ::CreateWindow(wc.lpszClassName, rand.c_str(), WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX, 50, 50, 450, 600, NULL, NULL, wc.hInstance, NULL);
 		if (!CreateDeviceD3D(hwnd))
 		{
 			CleanupDeviceD3D();
@@ -70,15 +70,21 @@ namespace menu
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(ImVec2(400, 600));
+			ImGui::SetNextWindowSize(ImVec2(450, 600));
 			ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 			static const auto dwFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar;
 			if (!settings::connected)
 			{
 				ImGui::Begin("Invaded", 0, dwFlags);
 				{
-					if (ImGui::SmallButton("Open Game and Then Click Me"))
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.58, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.075, 0.078, 0.094, 1.f));
+					if (ImGui::Button("Open Game and Then Click Me"))
 						settings::connected = true;
+					ImGui::PopStyleColor(4);
 				}
 				ImGui::End();
 			}
@@ -86,6 +92,18 @@ namespace menu
 			{
 				ImGui::Begin("Invaded", 0, dwFlags);
 				{
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.58, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.075, 0.078, 0.094, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(118.f, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.687, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.075, 0.078, 0.094, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.075, 0.078, 0.094, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.075,0.078, 0.094, 1.f));;
 					if (ImGui::TreeNode("Aim"))
 					{
 						ImGui::Text("Aimbot"); ImGui::SameLine(); ImGui::ToggleButton("#aimtoggle", &settings::aimBot);
@@ -139,6 +157,7 @@ namespace menu
 						pointers::local_player = 0;
 					}
 				}
+				ImGui::PopStyleColor(12);
 				ImGui::End();
 			}
 			switch (selectedBone)
