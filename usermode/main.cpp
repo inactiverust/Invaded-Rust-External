@@ -147,7 +147,7 @@ int main()
 	{
 		ShowWindow(GetConsoleWindow(), SW_SHOW);
 		std::cout << _("Error 1");
-		Sleep(30000);
+		Sleep(3000);
 		exit(3);
 	}
 	memory::setup(vars::target_pid);
