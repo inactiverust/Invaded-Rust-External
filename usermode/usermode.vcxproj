@@ -167,6 +167,20 @@
     <ClInclude Include="auth\auth.hpp" />
     <ClInclude Include="auth\skStr.h" />
     <ClInclude Include="BasePlayer.hpp" />
+    <ClInclude Include="drawing.hpp" />
+    <ClInclude Include="dxsdk\d3d9.h" />
+    <ClInclude Include="dxsdk\d3d9_x.h" />
+    <ClInclude Include="dxsdk\d3dx9.h" />
+    <ClInclude Include="dxsdk\d3dx9anim.h" />
+    <ClInclude Include="dxsdk\d3dx9core.h" />
+    <ClInclude Include="dxsdk\d3dx9effect.h" />
+    <ClInclude Include="dxsdk\d3dx9math.h" />
+    <ClInclude Include="dxsdk\d3dx9mesh.h" />
+    <ClInclude Include="dxsdk\d3dx9shader.h" />
+    <ClInclude Include="dxsdk\d3dx9shape.h" />
+    <ClInclude Include="dxsdk\d3dx9tex.h" />
+    <ClInclude Include="dxsdk\d3dx9xof.h" />
+    <ClInclude Include="dxsdk\defs.h" />
     <ClInclude Include="features.hpp" />
     <ClInclude Include="globals.hpp" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -189,6 +203,9 @@
     <ClInclude Include="PlayerWalkMovement.hpp" />
     <ClInclude Include="Sky.hpp" />
     <ClInclude Include="xor.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dxsdk\d3dx9math.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "imgui/imgui.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
@@ -201,11 +202,9 @@ namespace menu
 	}
 }
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-		return true;
 
 	switch (msg)
 	{

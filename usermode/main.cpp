@@ -2,16 +2,17 @@
 #include "memory.hpp"
 #include "globals.hpp"
 #include "features.hpp"
-#include "menu.hpp"
 
 #include "auth/skStr.h"
 #include "auth/auth.hpp"
 
+#include "drawing.hpp"
+
 bool should_exit;
 
-#define check_rust true;
-#define check_auth true;
-#define using_signed true;
+#define check_rust false;
+#define check_auth false;
+#define using_signed false;
 
 bool get_local_player()
 {
@@ -102,6 +103,12 @@ void load_drv()
 	VM_DOLPHIN_BLACK_END
 }
 
+void draw()
+{
+	drawing::create_window();
+	drawing::InitializeD3D();
+	drawing::loop();
+}
 int main()
 {
 #if check_rust
@@ -136,17 +143,13 @@ int main()
 		exit(3);
 	}
 #endif;
-
-	Sleep(1000);
+	
+	//Sleep(1000);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)menu::render, 0, 0, 0);
 
-	for (;;) {
-		if (settings::connected)
-			break;
-		Sleep(1);
-	}
+	drawing::get_hwnd();
 
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)draw, 0, 0, 0);
 	vars::target_pid = memory::get_pid(_("RustClient.exe"));
 
 	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));
