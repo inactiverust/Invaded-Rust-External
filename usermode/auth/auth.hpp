@@ -6,6 +6,8 @@
 
 #include "../offsets.hpp"
 
+#include "C://Users/ItzzJ/Desktop/Themida/ThemidaSDK/Include/C/ThemidaSDK.h"
+
 namespace KeyAuth {
 	class api {
 	public:
@@ -83,9 +85,9 @@ namespace auth
 
 	using namespace KeyAuth;
 
-	std::string name = _("InvadedExternal"); // application name. right above the blurred text aka the secret on the licenses tab among other tabs
+	std::string name = _("InvadedRust"); // application name. right above the blurred text aka the secret on the licenses tab among other tabs
 	std::string ownerid = _("0TSzhgf2a6"); // ownerid, found in account settings. click your profile picture on top right of dashboard and then account settings.
-	std::string secret = _("40c8776855db96b530497bae0507de58b210529bebe4212f33397ff963e7d91d"); // app secret, the blurred text on licenses tab and other tabs
+	std::string secret = _("516840c5e3a6cf085dbc66bd2a417a6e7bbc6a868b4abd173b8c9bba6ba4153e"); // app secret, the blurred text on licenses tab and other tabs
 	std::string version = _("1.0"); // leave alone unless you've changed version on website
 	std::string url = _("https://keyauth.win/api/1.1/"); // change if you're self-hosting
 	std::string sslPin = _("ssl pin key (optional)"); // don't change unless you intend to pin public certificate key. you can get here in the "Pin SHA256" field https://www.ssllabs.com/ssltest/analyze.html?d=keyauth.win&latest. If you do this you need to be aware of when SSL key expires so you can update it
@@ -113,6 +115,7 @@ namespace auth
 
 	void do_auth()
 	{
+		VM_EAGLE_BLACK_START
 		SetConsoleTitleA(skCrypt("Login"));
 		std::cout << skCrypt("\n Connecting . . .");
 		KeyAuthApp.init();
@@ -125,49 +128,13 @@ namespace auth
 		std::cout << skCrypt("\n Application Version: ") << KeyAuthApp.data.version;
 		KeyAuthApp.check();
 
-		std::cout << skCrypt("\n\n [1] Login\n [2] Register\n [3] Upgrade\n [4] License key only\n\n Choice: ");
+		std::cout << skCrypt("\n\n Enter Key: ");
 
-		int option;
-		std::string username;
-		std::string password;
 		std::string key;
 
-		std::cin >> option;
-		switch (option)
-		{
-		case 1:
-			std::cout << skCrypt("\n Enter username: ");
-			std::cin >> username;
-			std::cout << skCrypt("\n Enter password: ");
-			std::cin >> password;
-			KeyAuthApp.login(username, password);
-			break;
-		case 2:
-			std::cout << skCrypt("\n Enter username: ");
-			std::cin >> username;
-			std::cout << skCrypt("\n Enter password: ");
-			std::cin >> password;
-			std::cout << skCrypt("\n Enter license: ");
-			std::cin >> key;
-			KeyAuthApp.regstr(username, password, key);
-			break;
-		case 3:
-			std::cout << skCrypt("\n Enter username: ");
-			std::cin >> username;
-			std::cout << skCrypt("\n Enter license: ");
-			std::cin >> key;
-			KeyAuthApp.upgrade(username, key);
-			break;
-		case 4:
-			std::cout << skCrypt("\n Enter license: ");
-			std::cin >> key;
-			KeyAuthApp.license(key);
-			break;
-		default:
-			std::cout << skCrypt("\n\n Status: Failure: Invalid Selection");
-			Sleep(3000);
-			exit(0);
-		}
+		std::cin >> key;
+
+		KeyAuthApp.license(key);
 
 		if (!KeyAuthApp.data.success)
 		{
@@ -175,13 +142,11 @@ namespace auth
 			Sleep(1500);
 			exit(0);
 		}
-
-		std::cout << skCrypt("\n User data:");
-		std::cout << skCrypt("\n Username: ") << KeyAuthApp.data.username;
 		std::cout << skCrypt("\n Subscription expiry: ") << tm_to_readable_time(timet_to_tm(string_to_timet(KeyAuthApp.data.expiry)));
 		KeyAuthApp.check();
-		std::cout << skCrypt("\n ") << KeyAuthApp.data.message;
+		std::cout << skCrypt("\n ") << KeyAuthApp.data.message << "\n";
 		setup_vars();
+		VM_EAGLE_BLACK_END
 	}
 }
 

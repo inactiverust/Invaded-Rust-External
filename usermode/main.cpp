@@ -16,7 +16,7 @@ bool should_exit;
 bool get_local_player()
 {
 	uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
-	if(!buffer_list)
+	if (!buffer_list)
 		buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x40, 0x10, 0x28 });
 	int sz = memory::read<int>(buffer_list + 0x10);
 	uintptr_t p_object_list = memory::read<uintptr_t>(buffer_list + 0x18);
@@ -89,15 +89,17 @@ void cheat_entry()
 
 void load_drv()
 {
+	VM_DOLPHIN_BLACK_START
 	std::string path = std::filesystem::current_path().string();
-	auth::download_file("206642", "invdriver.sys");
+	auth::download_file("209904", "invdriver.sys");
 	system(("sc create invaded type= kernel binPath= " + path + "\\invdriver.sys").c_str());
 	system("sc start invaded");
-	Sleep(300);
+	Sleep(100);
 	system("sc stop invaded");
 	remove("invdriver.sys");
 	system("sc delete invaded");
 	system("CLS");
+	VM_DOLPHIN_BLACK_END
 }
 
 int main()
@@ -127,6 +129,12 @@ int main()
 
 #if using_signed
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)load_drv, 0, 0, 0);
+	if (!memory::get_pid("loader.exe"))
+	{
+		std::cout << _("Rename File to: loader.exe");
+		Sleep(3000);
+		exit(3);
+	}
 #endif;
 
 	Sleep(1000);
@@ -142,7 +150,7 @@ int main()
 	vars::target_pid = memory::get_pid(_("RustClient.exe"));
 
 	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));
-	
+
 	if (!pointers::game_assembly)
 	{
 		ShowWindow(GetConsoleWindow(), SW_SHOW);

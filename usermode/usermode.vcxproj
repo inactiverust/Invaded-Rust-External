@@ -81,7 +81,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>.\auth\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>.\auth\;C:\Users\ItzzJ\Desktop\Themida\ThemidaSDK\Lib;C:\Users\ItzzJ\Desktop\Themida\ThemidaSDK;C:\Users\ItzzJ\Desktop\Themida\ThemidaSDK\Lib\COFF;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>C:\Users\ItzzJ\Desktop\Themida\ThemidaSDK\Include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
