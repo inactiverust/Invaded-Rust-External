@@ -55,7 +55,12 @@ namespace ImGuiShapes
 		if(center)
 			ImGui::GetWindowDrawList()->AddText(ImVec2(pos.x - len * fs / 5, pos.y), ImGui::GetColorU32(rgba), text, NULL, NULL, fs);
 		else
-			ImGui::GetWindowDrawList()->AddText(pos, ImGui::GetColorU32(rgba), text, NULL, NULL, fs);
+			ImGui::GetWindowDrawList()->AddText(ImVec2(pos.x, pos.y), ImGui::GetColorU32(rgba), text, NULL, NULL, fs);
+	}
+
+	void draw_filled_rect(ImVec2 min, ImVec2 max, ImVec4 rgba, float rounding)
+	{
+		ImGui::GetWindowDrawList()->AddRectFilled(min, max, ImGui::GetColorU32(rgba), rounding);
 	}
 }
 
@@ -228,7 +233,7 @@ namespace drawing {
 		colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 1.f);
 		ImGui::Begin(" ", (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
 		if (settings::aimBot)
-			ImGuiShapes::draw_circle(ImVec2(ScreenCenterX, ScreenCenterY), settings::aim::fov, ImVec4(1, 1, 1, 1), 3.f);
+			ImGuiShapes::draw_circle(ImVec2(ScreenCenterX, ScreenCenterY), settings::aim::fov, ImVec4(menu_settings::fov_circle_color.x, menu_settings::fov_circle_color.y, menu_settings::fov_circle_color.z, 1), 3.f);
 
 		for (auto& info : vars::playerPosList)
 		{
@@ -241,11 +246,11 @@ namespace drawing {
 
 			if (info.isTarget)
 			{
-				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(1, 0, 0, 1), 1.25f);
+				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(menu_settings::aim_target_color.x, menu_settings::aim_target_color.y, menu_settings::aim_target_color.z, 1), 1.25f);
 			}
 			else
 			{
-				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(1, 1, 1, 1), 1.25f);
+				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(menu_settings::normal_esp_color.x, menu_settings::normal_esp_color.y, menu_settings::normal_esp_color.z, 1), 1.25f);
 			}
 
 			if (settings::ESP::show_name && settings::ESP::show_distance)
@@ -266,6 +271,17 @@ namespace drawing {
 				ImGuiShapes::draw_line(ImVec2(x + bwidth * 1.25, y + bheight), ImVec2(x + bwidth * 1.25, (y + bheight) - bheight * (info.health / 100.f)), ImVec4(0, 1, 0, 1), bwidth / 20.f);
 		}
 
+		if (settings::ESP::show_panel)
+		{
+			ImGuiShapes::draw_filled_rect(ImVec2(Width * 0.95, Height * 0.05), ImVec2(Width * 0.85, Height * 0.2), ImVec4(.25, .25, .25, 1), 0.f);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06), ImVec4(1, 1, 1, 1), vars::aim_player_info.name.c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 15), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[0].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 30), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[1].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 45), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[2].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 60), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[3].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 75), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[4].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 90), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[5].c_str(), 0, false);
+		}
 		ImGui::End();
 
 		if (GetAsyncKeyState(VK_INSERT) != 0) {  //Menu Key
@@ -303,8 +319,20 @@ namespace drawing {
 						ImGui::Text("Target Sleeping"); ImGui::SameLine(); ImGui::ToggleButton("#sleeptoggle", &settings::aim::target_sleeping);
 						ImGui::Text("Target NPC"); ImGui::SameLine(); ImGui::ToggleButton("#npctoggle", &settings::aim::target_npc);
 						ImGui::Text("Aim Bone"); ImGui::SameLine(); ImGui::Combo(" ", &selected, options, IM_ARRAYSIZE(options));
+						ImGui::Text("Aimbot FOV:");
 						ImGui::SliderFloat("#aimfovslider", &settings::aim::fov, 5, 500, "%.3f", 0);
-						//ImGui::Text("Aim Bone"); ImGui::SameLine(); ImGui::Combo(" ", &selectedBone, options, IM_ARRAYSIZE(options));
+						switch (selected)
+						{
+						case 0:
+							settings::aim::aim_bone = BasePlayer::head;
+							break;
+						case 1:
+							settings::aim::aim_bone = BasePlayer::spine3;
+							break;
+						case 2:
+							settings::aim::aim_bone = BasePlayer::pelvis;
+							break;
+						}
 					}
 					ImGui::TreePop();
 				}
@@ -316,6 +344,7 @@ namespace drawing {
 					ImGui::Text("Walk on Water"); ImGui::SameLine(); ImGui::ToggleButton("#watertoggle", &settings::waterWalk);
 					ImGui::Text("Shoot While Mounted"); ImGui::SameLine(); ImGui::ToggleButton("#mounttoggle", &settings::heliShoot);
 					ImGui::Text("No Heavy/Visor"); ImGui::SameLine(); ImGui::ToggleButton("#heavytoggle", &settings::noHeavy);
+					ImGui::Text("Chams"); ImGui::SameLine(); ImGui::ToggleButton("#chamtoggle", &settings::chams);
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("ESP"))
@@ -323,6 +352,7 @@ namespace drawing {
 					ImGui::Text("ESP"); ImGui::SameLine(); ImGui::ToggleButton("#esptoggle", &settings::esp);
 					if (settings::esp)
 					{
+						ImGui::Text("Show Panel"); ImGui::SameLine(); ImGui::ToggleButton("#paneltoggle", &settings::ESP::show_panel);
 						ImGui::Text("Show Health Bar"); ImGui::SameLine(); ImGui::ToggleButton("#healthtoggle", &settings::ESP::show_health);
 						ImGui::Text("Show Name"); ImGui::SameLine(); ImGui::ToggleButton("#nametoggle", &settings::ESP::show_name);
 						ImGui::Text("Show Distance"); ImGui::SameLine(); ImGui::ToggleButton("#disttoggle", &settings::ESP::show_distance);
@@ -354,6 +384,19 @@ namespace drawing {
 					ImGui::Text("No Sway"); ImGui::SameLine(); ImGui::ToggleButton("#swaytoggle", &settings::noSway);
 					ImGui::Text("Force Auto"); ImGui::SameLine(); ImGui::ToggleButton("#autotoggle", &settings::automatic);
 					ImGui::Text("Super Eoka"); ImGui::SameLine(); ImGui::ToggleButton("#eokatoggle", &settings::superEoka);
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Misc"))
+				{
+					float col1[3] = { menu_settings::normal_esp_color.x, menu_settings::normal_esp_color.y, menu_settings::normal_esp_color.z };
+					ImGui::ColorEdit3("ESP Color", col1, 0);
+					menu_settings::normal_esp_color.x = col1[0]; menu_settings::normal_esp_color.y = col1[1]; menu_settings::normal_esp_color.z = col1[2];
+					float col2[3] = { menu_settings::aim_target_color.x, menu_settings::aim_target_color.y, menu_settings::aim_target_color.z };
+					ImGui::ColorEdit3("Aim Target Color", col2, 0);
+					menu_settings::aim_target_color.x = col2[0]; menu_settings::aim_target_color.y = col2[1]; menu_settings::aim_target_color.z = col2[2];
+					float col3[3] = { menu_settings::fov_circle_color.x, menu_settings::fov_circle_color.y, menu_settings::fov_circle_color.z };
+					ImGui::ColorEdit3("FOV Color", col3, 0);
+					menu_settings::fov_circle_color.x = col3[0]; menu_settings::fov_circle_color.y = col3[1]; menu_settings::fov_circle_color.z = col3[2];
 					ImGui::TreePop();
 				}
 			}

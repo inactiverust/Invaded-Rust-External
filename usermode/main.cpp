@@ -40,6 +40,13 @@ bool get_local_player()
 	return false;
 }
 
+void get_cham_mats()
+{
+	pointers::cham_mats::world = memory::read_chain(pointers::game_assembly, { classes::oOutlineManager, 0xB8, 0x0 });
+	pointers::cham_mats::white = memory::read_chain((uintptr_t)pointers::tod_sky_instance, { 0xA8, 0x1A0, 0x78 });
+	pointers::cham_mats::black = memory::read_chain((uintptr_t)pointers::tod_sky_instance, { 0xA8, 0x1A0, 0x88 });
+}
+
 void setup()
 {
 	misc::height = GetSystemMetrics(SM_CYSCREEN);
@@ -50,6 +57,7 @@ void setup()
 	pointers::view_matrix_pointer = reinterpret_cast<Matrix4x4*>(memory::read_chain(pointers::game_assembly, { classes::oMainCamera, 0xB8, 0x0, 0x10 }) + 0x2E4);
 	pointers::occlusion_culling_static = reinterpret_cast<OcclusionCulling*>(memory::read_chain(pointers::game_assembly, { classes::oOcclusionCulling, 0xB8 }));
 	pointers::occlusion_culling_static->disable_animals();
+	get_cham_mats();
 }
 
 void esp()
@@ -80,6 +88,10 @@ void esp()
 			}
 			else
 			{
+				if (settings::chams && Player->player_model()->is_npc() == false)
+				{
+					Player->player_model()->set_cham(0);
+				}
 				if (settings::aimBot)
 				{
 					if (!settings::aim::target_sleeping && Player->has_flag(BasePlayer::player_flags::Sleeping))
@@ -132,6 +144,40 @@ void esp()
 	vars::playerPosList = std::move(temp_info);
 }
 
+void fill_player_info()
+{
+	if (settings::ESP::show_panel)
+	{
+		PlayerInfo* info = &vars::aim_player_info;
+		if (vars::AimPlayer)
+		{
+			info->name = vars::AimPlayer->get_name();
+			uintptr_t inventory = memory::read<uintptr_t>((uintptr_t)vars::AimPlayer + oInventory);
+			uintptr_t belt = memory::read<uintptr_t>(inventory + 0x28);
+			uintptr_t item_list = memory::read<uintptr_t>(belt + 0x38);
+			uintptr_t list = memory::read<uintptr_t>(item_list + 0x10);
+			int sz = memory::read<int>(item_list + 0x18);
+
+			std::vector<uintptr_t> item_arr = List::get_list(list, sz);
+			int counter = 0;
+			for (auto& entry : item_arr)
+			{
+				uintptr_t ItemDefinition = memory::read<uintptr_t>(entry + 0x20);
+				wchar_t item_name[36] = { '\0' };
+				memory::copy_memory(memory::read<uintptr_t>((uintptr_t)ItemDefinition + 0x20) + 0x14, (uintptr_t)&item_name, sizeof(item_name));
+				std::wstring ws(item_name);
+				std::string name = std::string(ws.begin(), ws.end());
+				info->slot[counter] = name;
+				counter++;
+			}
+
+			for (int i = counter; i < 6; i++)
+			{
+				info->slot[i] = "";
+			}
+		}
+	}
+}
 void cheat_entry()
 {
 	while (!should_exit)
@@ -153,6 +199,7 @@ void cheat_entry()
 		esp();
 		if(pointers::local_player)
 		{
+			fill_player_info();
 			features::admin_flag();
 			features::change_time();
 			features::spiderman();

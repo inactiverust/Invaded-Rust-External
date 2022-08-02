@@ -21,6 +21,7 @@ namespace classes
 	uint64_t oOcclusionCulling = 52696992; //OcclusionCulling_c*
 	uint64_t oConsoleSystem = 52756896; //ConsoleSystem_Index_c*
 	uint64_t oMainCamera = 52699584; //MainCamera_c*
+	uint64_t oOutlineManager = 52608720; //OutlineManager_c*
 }
 #endif
 

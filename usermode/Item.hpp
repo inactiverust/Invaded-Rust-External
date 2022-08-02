@@ -123,6 +123,7 @@ public:
 			memory::write<float>(base_projectile + 0x378, strike_frac);
 		}
 	}
+
 	void set_no_spread()
 	{
 		int id = get_rust_id();
@@ -152,10 +153,20 @@ public:
 				uintptr_t recoil_properties_old = memory::read<uintptr_t>(base_projectile + oRecoilProperties);
 				uintptr_t recoil_properties_new = memory::read<uintptr_t>(recoil_properties_old + oOverride);
 
-				memory::write<float>(recoil_properties_new + oYAWMin, percent / 100 * orig_values.x);
-				memory::write<float>(recoil_properties_new + oYAWMax, percent / 100 * orig_values.y);
-				memory::write<float>(recoil_properties_new + oPitchMin, percent / 100 * orig_values.z);
-				memory::write<float>(recoil_properties_new + oPitchMax, percent / 100 * orig_values.w);
+				if (id == 1373971859 || id == 649912614)
+				{
+					memory::write<float>(recoil_properties_old + oYAWMin, percent / 100 * orig_values.x);
+					memory::write<float>(recoil_properties_old + oYAWMax, percent / 100 * orig_values.y);
+					memory::write<float>(recoil_properties_old + oPitchMin, percent / 100 * orig_values.z);
+					memory::write<float>(recoil_properties_old + oPitchMax, percent / 100 * orig_values.w);
+				}
+				else
+				{
+					memory::write<float>(recoil_properties_new + oYAWMin, percent / 100 * orig_values.x);
+					memory::write<float>(recoil_properties_new + oYAWMax, percent / 100 * orig_values.y);
+					memory::write<float>(recoil_properties_new + oPitchMin, percent / 100 * orig_values.z);
+					memory::write<float>(recoil_properties_new + oPitchMax, percent / 100 * orig_values.w);
+				}
 			}
 		}
 	}

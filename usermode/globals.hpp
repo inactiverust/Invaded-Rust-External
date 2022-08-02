@@ -23,12 +23,19 @@ struct DrawingInfo
 	bool isTarget;
 };
 
+struct PlayerInfo
+{
+	std::string name;
+	std::string slot[6];
+};
+
 namespace vars
 {
 	uint32_t target_pid;
 	BasePlayer* AimPlayer;
 	std::vector<BasePlayer*> playerList;
 	std::vector<DrawingInfo> playerPosList;
+	PlayerInfo aim_player_info;
 }
 
 namespace pointers
@@ -40,9 +47,17 @@ namespace pointers
 	AdminConVar* admin_convar_static;
 	Sky* tod_sky_instance;
 	OcclusionCulling* occlusion_culling_static;
+	namespace cham_mats
+	{
+		uintptr_t pink = 0;
+		uintptr_t black = 0;
+		uintptr_t white = 0;
+		uintptr_t world = 0;
+	}
 }
 
 namespace settings {
+	bool chams = false;
 	bool waterWalk = false;
 	bool heliShoot = false;
 	bool noSway = false;
@@ -81,12 +96,17 @@ namespace settings {
 		bool show_health = false;
 		bool show_name = false;
 		bool show_distance = false;
+		bool show_panel = false;
 		float esp_distance = 200.f;
 	}
 }
-namespace menu
+namespace menu_settings
 {
+	Vector3 aim_target_color = Vector3(1, 0, 0);
+	Vector3 normal_esp_color = Vector3(1, 1, 1);
+	Vector3 fov_circle_color = Vector3(1, 1, 1);
 }
+
 namespace keybinds
 {
 	int aimkey = VK_RBUTTON;

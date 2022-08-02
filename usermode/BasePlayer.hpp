@@ -179,7 +179,6 @@ public:
 		std::wstring ws(player_name);
 		return std::string(ws.begin(), ws.end());
 	}
-
 	void set_flag(player_flags flag)
 	{
 		int current_flags = memory::read<int>(reinterpret_cast<uintptr_t>(this) + oPlayerFlags);

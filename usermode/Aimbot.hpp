@@ -15,7 +15,7 @@ namespace Aim
 		float bullet_velocity = velocity * std::cos(pitch);
 		float time = distance / bullet_velocity;
 
-		return (0.5f * gravity * time * time) * 9.1;
+		return (0.5f * gravity * time * time) * 10;
 	}
 
 	Vector3 prediction(Vector3 AimPos, Vector3 PlayerPos)
