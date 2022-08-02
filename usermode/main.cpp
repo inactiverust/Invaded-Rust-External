@@ -10,9 +10,9 @@
 
 bool should_exit;
 
-#define check_rust false;
-#define check_auth false;
-#define using_signed false;
+#define check_rust false
+#define check_auth false
+#define using_signed false
 
 bool get_local_player()
 {
@@ -52,6 +52,86 @@ void setup()
 	pointers::occlusion_culling_static->disable_animals();
 }
 
+void esp()
+{
+	vars::playerList.clear();
+	std::vector<DrawingInfo> temp_info;
+	uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
+	if (!buffer_list)
+		buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x40, 0x10, 0x28 });
+	int sz = memory::read<int>(buffer_list + 0x10);
+	uintptr_t p_object_list = memory::read<uintptr_t>(buffer_list + 0x18);
+	std::vector<uintptr_t> object_list = List::get_list(p_object_list, sz);
+	for (const auto& object : object_list)
+	{
+		if (!object) continue;
+		uintptr_t game_object = memory::read_chain(object, { 0x10, 0x30 });
+		WORD tag = memory::read<WORD>(game_object + 0x54);
+		if (tag == 6)
+		{
+			BasePlayer* Player = reinterpret_cast<BasePlayer*>(memory::read_chain(game_object, { 0x30, 0x18, 0x28 }));
+			if (Player->player_model()->is_local_player())
+			{
+				if (Player != pointers::local_player)
+				{
+					pointers::local_player = Player;
+					setup();
+				}
+			}
+			else
+			{
+				if (settings::aimBot)
+				{
+					if (!settings::aim::target_sleeping && Player->has_flag(BasePlayer::player_flags::Sleeping))
+						goto label;
+					else if (!settings::aim::target_wounded && Player->has_flag(BasePlayer::player_flags::Wounded))
+						goto label;
+					else if (!settings::aim::target_npc && Player->player_model()->is_npc())
+						goto label;
+					vars::playerList.push_back(Player);
+				}
+				label:
+				if (settings::esp)
+				{
+					if (!settings::ESP::show_sleeping && Player->has_flag(BasePlayer::player_flags::Sleeping))
+						continue;
+					else if (!settings::ESP::show_wounded && Player->has_flag(BasePlayer::player_flags::Wounded))
+						continue;
+					else if (!settings::ESP::show_npc && Player->player_model()->is_npc())
+						continue;
+
+					DrawingInfo info;
+
+					Vector3 hpos = Player->get_position(BasePlayer::head);
+					Vector3 tpos = Player->player_model()->get_position();
+					Vector3 lpos = pointers::local_player->player_model()->get_position();
+
+					float dist = Calc3D_Dist(tpos, lpos);
+
+					if (dist > settings::ESP::esp_distance)
+						continue;
+
+					Aim::world_to_screen(Vector3(hpos.x, hpos.y + 0.3, hpos.z), info.HeadScreenPos);
+					Aim::world_to_screen(Vector3(tpos.x, tpos.y - 0.15, tpos.z), info.ToeScreenPos);
+
+					info.name = Player->get_name();
+					info.distance = dist;
+
+					if (Player == vars::AimPlayer)
+						info.isTarget = true;
+					else
+						info.isTarget = false;
+
+					info.health = Player->get_health();
+
+					temp_info.push_back(info);
+				}
+			}
+		}
+	}
+	vars::playerPosList = std::move(temp_info);
+}
+
 void cheat_entry()
 {
 	while (!should_exit)
@@ -61,17 +141,23 @@ void cheat_entry()
 
 	Sleep(40);
 
-	features::disable_commands();
+	if (!features::disable_commands())
+	{
+		ShowWindow(GetConsoleWindow(), SW_SHOW);
+		std::cout << _("Error 1");
+		Sleep(3000);
+		exit(3);
+	}
 
 	while (true) {
-		if (pointers::local_player)
+		esp();
+		if(pointers::local_player)
 		{
 			features::admin_flag();
 			features::change_time();
 			features::spiderman();
 			features::super_jump();
 			features::fov_changer();
-			features::esp();
 			features::no_sway();
 			features::weapon_mods();
 			features::full_bright();
@@ -79,11 +165,6 @@ void cheat_entry()
 			features::no_heavy();
 			features::water_walk();
 			features::shoot_heli();
-		}
-		else
-		{
-			if (get_local_player())
-				setup();
 		}
 	}
 }
@@ -105,12 +186,19 @@ void load_drv()
 
 void draw()
 {
+	while (!hwnd)
+	{
+		Sleep(1);
+	}
 	drawing::create_window();
 	drawing::InitializeD3D();
 	drawing::loop();
 }
 int main()
 {
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)draw, 0, 0, 0);
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
+
 #if check_rust
 	if (memory::get_pid(_("RustClient.exe")))
 	{
@@ -131,10 +219,9 @@ int main()
 		Sleep(3000);
 		exit(3);
 	}
-	ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
-
 #if using_signed
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)load_drv, 0, 0, 0);
 	if (!memory::get_pid("loader.exe"))
 	{
@@ -142,14 +229,17 @@ int main()
 		Sleep(3000);
 		exit(3);
 	}
-#endif;
-	
-	//Sleep(1000);
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
+#endif
 
 	drawing::get_hwnd();
+	
+	for (;;)
+	{
+		if (GetAsyncKeyState(VK_INSERT) != 0)
+			break;
+		Sleep(1);
+	}
 
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)draw, 0, 0, 0);
 	vars::target_pid = memory::get_pid(_("RustClient.exe"));
 
 	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));

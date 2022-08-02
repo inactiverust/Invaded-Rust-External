@@ -172,6 +172,14 @@ public:
 	/* BasePlayer Mutators */
 	void set_cloth_rebuild(bool input) { memory::write<bool>(reinterpret_cast<uintptr_t>(this) + oNeedsClothesRebuild, input); }
 
+	std::string get_name()
+	{
+		wchar_t player_name[36] = { '\0' };
+		memory::copy_memory(memory::read<uintptr_t>((uintptr_t)this + oDisplayName) + 0x14, (uintptr_t)&player_name, sizeof(player_name));
+		std::wstring ws(player_name);
+		return std::string(ws.begin(), ws.end());
+	}
+
 	void set_flag(player_flags flag)
 	{
 		int current_flags = memory::read<int>(reinterpret_cast<uintptr_t>(this) + oPlayerFlags);

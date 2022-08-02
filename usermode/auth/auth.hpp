@@ -116,7 +116,7 @@ namespace auth
 	void do_auth()
 	{
 		VM_EAGLE_BLACK_START
-		SetConsoleTitleA(skCrypt("Login"));
+			SetConsoleTitleA(skCrypt("Login"));
 		std::cout << skCrypt("\n Connecting . . .");
 		KeyAuthApp.init();
 		if (!KeyAuthApp.data.success)
@@ -149,4 +149,3 @@ namespace auth
 		VM_EAGLE_BLACK_END
 	}
 }
-

@@ -4,7 +4,7 @@
 #include "globals.hpp"
 #include "math.hpp"
 #include "memory.hpp"
-
+#include "drawing.hpp"
 
 
 namespace Aim
@@ -87,37 +87,8 @@ namespace Aim
 		if (w < 0.098f) return false;
 		float y = Dot(UpVec, EntityPos) + memory::read<float>((uintptr_t)&pointers::view_matrix_pointer->_42);
 		float x = Dot(RightVec, EntityPos) + memory::read<float>((uintptr_t)&pointers::view_matrix_pointer->_41);
-		ScreenPos = Vector2((misc::width / 2) * (1.f + x / w), (misc::height / 2) * (1.f - y / w));
+		ScreenPos = Vector2((Width / 2) * (1.f + x / w), (Height / 2) * (1.f - y / w));
 		return true;
-	}
-
-	void fill_player_list()
-	{
-		vars::playerList.clear();
-		uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
-		int sz = memory::read<int>(buffer_list + 0x10);
-		uintptr_t p_object_list = memory::read<uintptr_t>(buffer_list + 0x18);
-		std::vector<uintptr_t> object_list = List::get_list(p_object_list, sz);
-		for (const auto& object : object_list)
-		{
-			if (!object) continue;
-			uintptr_t game_object = memory::read_chain(object, { 0x10, 0x30 });
-			WORD tag = memory::read<WORD>(game_object + 0x54);
-			if (tag == 6)
-			{
-				BasePlayer* Player = reinterpret_cast<BasePlayer*>(memory::read_chain(game_object, { 0x30, 0x18, 0x28 }));
-				if (Player != pointers::local_player)
-				{
-					if (!settings::aim::target_sleeping && Player->has_flag(BasePlayer::player_flags::Sleeping))
-						continue;
-					if (!settings::aim::target_wounded && Player->has_flag(BasePlayer::player_flags::Wounded))
-						continue;
-					if (!settings::aim::target_npc && Player->player_model()->is_npc())
-						continue;
-					vars::playerList.push_back(Player);
-				}
-			}
-		}
 	}
 
 	void find_target()
@@ -128,10 +99,11 @@ namespace Aim
 		{
 			Vector2 ScreenPos;
 			Vector3 tempPos = vars::playerList[i]->player_model()->get_position();
+			tempPos.y += 1.f;
 			Vector3 playerPos = pointers::local_player->player_model()->get_position();
 			world_to_screen(tempPos, ScreenPos);
 			float fov = Calc2D_Dist(Vector2(misc::width / 2, misc::height / 2), ScreenPos);
-			if (fov < min_fov && fov < 500 && fov > 0)
+			if (fov < min_fov && fov < settings::aim::fov && fov > 0)
 			{
 				returnPlayer = vars::playerList[i];
 				min_fov = fov;

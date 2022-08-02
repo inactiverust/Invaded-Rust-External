@@ -1,5 +1,6 @@
 #pragma once
-
+#define iauth false
+#if iauth
 namespace classes
 {
 	uint64_t oBaseEntity = 0;  //BaseEntity_c*
@@ -10,6 +11,18 @@ namespace classes
 	uint64_t oConsoleSystem = 0; //ConsoleSystem_Index_c*
 	uint64_t oMainCamera = 0; //MainCamera_c*
 }
+#else
+namespace classes
+{
+	uint64_t oBaseEntity = 52692400;  //BaseEntity_c*
+	uint64_t oAdminConVar = 52687640; //ConVar_Admin_c*
+	uint64_t oTODSky = 52706616; //TOD_Sky_c*
+	uint64_t oGraphicConVar = 52698272; //ConVar_Graphics_c*
+	uint64_t oOcclusionCulling = 52696992; //OcclusionCulling_c*
+	uint64_t oConsoleSystem = 52756896; //ConsoleSystem_Index_c*
+	uint64_t oMainCamera = 52699584; //MainCamera_c*
+}
+#endif
 
 #define oPlayerFlags 0x688
 #define oPlayerModel 0x4c8
@@ -24,6 +37,7 @@ namespace classes
 #define oInventory 0x698
 #define oPlayerEyes 0x690
 #define oModel 0x130
+#define oDisplayName 0x6e8
 
 #define oTransforms 0x48
 

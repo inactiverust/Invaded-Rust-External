@@ -97,10 +97,6 @@ namespace features
 			pointers::local_player->player_movement()->set_ground_time(99999.f);
 		}
 	}
-	void esp()
-	{
-		pointers::occlusion_culling_static->set_esp(settings::esp);
-	}
 	void full_bright()
 	{
 		if (settings::full_bright)
@@ -126,10 +122,9 @@ namespace features
 	}
 
 	void aim_bot()
-	{
+	{	
 		if (settings::aimBot)
 		{
-			Aim::fill_player_list();
 			Aim::find_target();
 			if (GetAsyncKeyState(keybinds::aimkey) != 0)
 			{

@@ -13,11 +13,22 @@ namespace misc
 	float height;
 }
 
+struct DrawingInfo
+{
+	Vector2 HeadScreenPos;
+	Vector2 ToeScreenPos;
+	std::string name;
+	int distance;
+	float health;
+	bool isTarget;
+};
+
 namespace vars
 {
 	uint32_t target_pid;
 	BasePlayer* AimPlayer;
 	std::vector<BasePlayer*> playerList;
+	std::vector<DrawingInfo> playerPosList;
 }
 
 namespace pointers
@@ -53,6 +64,7 @@ namespace settings {
 	float fov = 120.f;
 	namespace aim
 	{
+		float fov = 300.f;
 		bool move_prediction = false;
 		bool target_wounded = false;
 		bool target_sleeping = false;
@@ -61,10 +73,20 @@ namespace settings {
 		bool silent = false;
 		BasePlayer::bone_list aim_bone = BasePlayer::bone_list::head;
 	}
-	//temp
-	bool connected;
+	namespace ESP
+	{
+		bool show_wounded = false;
+		bool show_sleeping = false;
+		bool show_npc = false;
+		bool show_health = false;
+		bool show_name = false;
+		bool show_distance = false;
+		float esp_distance = 200.f;
+	}
 }
-
+namespace menu
+{
+}
 namespace keybinds
 {
 	int aimkey = VK_RBUTTON;

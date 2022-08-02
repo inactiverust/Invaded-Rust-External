@@ -8,10 +8,10 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_internal.h"
-
+#include "globals.hpp"
 #include <dwmapi.h>
 #pragma comment(lib, "dwmapi.lib")
-
+#include <string>
 #include <Uxtheme.h>
 
 int wLeft, wTop;
@@ -42,9 +42,20 @@ namespace ImGuiShapes
 		ImGui::GetWindowDrawList()->AddRect(p1, p2, ImGui::GetColorU32(rgba), 0, 0, thickness);
 	}
 
-	void draw_circle(ImVec2 centre, ImVec4 rgba, float thickness)
+	void draw_circle(ImVec2 centre, float radius, ImVec4 rgba, float thickness)
 	{
-		ImGui::GetWindowDrawList()->AddCircle(ImVec2(100, 100), 100, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), 0, thickness);
+		ImGui::GetWindowDrawList()->AddCircle(centre, radius, ImGui::GetColorU32(rgba), 0, thickness);
+	}
+
+	void draw_center_text(ImVec2 pos, ImVec4 rgba, const char* text, float fs, bool center)
+	{
+		int len = sizeof(text) / sizeof(char);
+		if (fs > 13)
+			fs = 13;
+		if(center)
+			ImGui::GetWindowDrawList()->AddText(ImVec2(pos.x - len * fs / 5, pos.y), ImGui::GetColorU32(rgba), text, NULL, NULL, fs);
+		else
+			ImGui::GetWindowDrawList()->AddText(pos, ImGui::GetColorU32(rgba), text, NULL, NULL, fs);
 	}
 }
 
@@ -65,7 +76,7 @@ namespace drawing {
 		p_Object->Release();
 
 		DestroyWindow(Window);
-		UnregisterClassA(("svchost"), NULL);
+		UnregisterClassA(_("ezscreenrecorder"), NULL);
 	}
 
 	LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
@@ -136,7 +147,7 @@ namespace drawing {
 		WNDCLASSEX wc;
 		ZeroMemory(&wc, sizeof(wc));
 		wc.cbSize = sizeof(wc);
-		wc.lpszClassName = "svchost";
+		wc.lpszClassName = _("ezscreenrecorder");
 		wc.lpfnWndProc = WinProc;
 		RegisterClassEx(&wc);
 
@@ -154,12 +165,19 @@ namespace drawing {
 		else
 			exit(2);
 
-		Window = CreateWindowExA(NULL, ("svchost"), ("svchost1"), WS_POPUP | WS_VISIBLE, 0, 0, Width, Height, 0, 0, 0, 0);
+		Window = CreateWindowExA(NULL, _("ezscreenrecorder"), _("ezscreenrecorder"), WS_POPUP | WS_VISIBLE, 0, 0, Width, Height, 0, 0, 0, 0);
 
 		DwmExtendFrameIntoClientArea(Window, &Margin);
 		SetWindowLong(Window, GWL_EXSTYLE, WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_LAYERED);
 		ShowWindow(Window, SW_SHOW);
 		UpdateWindow(Window);
+	}
+
+	bool is_valid(Vector2 check)
+	{
+		if (check.x <= 0 || check.y <= 0 || check.x >= Width || check.y >= Width)
+			return false;
+		return true;
 	}
 
 	void InitializeD3D()
@@ -195,8 +213,9 @@ namespace drawing {
 
 		p_Object->Release();
 	}
-
 	bool toggle = false;
+	static const char* options[]{ "Head", "Chest", "Leg" };
+	int selected;
 	void draw_imgui() {
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -207,8 +226,46 @@ namespace drawing {
 		ImVec4* colors = ImGui::GetStyle().Colors;
 		colors[ImGuiCol_WindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 		colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 1.f);
-
 		ImGui::Begin(" ", (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
+		if (settings::aimBot)
+			ImGuiShapes::draw_circle(ImVec2(ScreenCenterX, ScreenCenterY), settings::aim::fov, ImVec4(1, 1, 1, 1), 3.f);
+
+		for (auto& info : vars::playerPosList)
+		{
+			if (!is_valid(info.HeadScreenPos) || !is_valid(info.ToeScreenPos))
+				continue;
+			float bheight = info.ToeScreenPos.y - info.HeadScreenPos.y;
+			float bwidth = bheight / 2.f;
+			const float x = info.ToeScreenPos.x - (bwidth / 2.f);
+			const float y = info.HeadScreenPos.y;
+
+			if (info.isTarget)
+			{
+				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(1, 0, 0, 1), 1.25f);
+			}
+			else
+			{
+				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(1, 1, 1, 1), 1.25f);
+			}
+
+			if (settings::ESP::show_name && settings::ESP::show_distance)
+			{
+				ImGuiShapes::draw_center_text(ImVec2(x + bwidth / 2, y + bheight * 1.1), ImVec4(1, 1, 1, 1), info.name.c_str(), bwidth / 1.5, true);
+				ImGuiShapes::draw_center_text(ImVec2(x + bwidth / 2, y + bheight * 1.4), ImVec4(1, 1, 1, 1), std::to_string(info.distance).c_str(), bwidth, false);
+			}
+			else if (settings::ESP::show_name)
+			{
+				ImGuiShapes::draw_center_text(ImVec2(x + bwidth / 2, y + bheight * 1.1), ImVec4(1, 1, 1, 1), info.name.c_str(), bwidth / 1.5, true);
+			}
+			else if (settings::ESP::show_distance)
+			{
+				ImGuiShapes::draw_center_text(ImVec2(x + bwidth / 2, y + bheight * 1.2), ImVec4(1, 1, 1, 1), std::to_string(info.distance).c_str(), bwidth, false);
+			}
+
+			if(settings::ESP::show_health)
+				ImGuiShapes::draw_line(ImVec2(x + bwidth * 1.25, y + bheight), ImVec2(x + bwidth * 1.25, (y + bheight) - bheight * (info.health / 100.f)), ImVec4(0, 1, 0, 1), bwidth / 20.f);
+		}
+
 		ImGui::End();
 
 		if (GetAsyncKeyState(VK_INSERT) != 0) {  //Menu Key
@@ -216,9 +273,96 @@ namespace drawing {
 			toggle = !toggle;
 		}
 
+
 		if (toggle)
 		{
-
+			SetWindowLong(Window, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_LAYERED);
+			ImGui::Begin("Invaded", 0, 0);
+			{
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.612, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.58, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.075, 0.078, 0.094, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(118.f, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.612, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.687, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0.612, 0.f, 0.f, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.075, 0.078, 0.094, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.075, 0.078, 0.094, 1.f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.075, 0.078, 0.094, 1.f));;
+				if (ImGui::TreeNode("Aim"))
+				{
+					ImGui::Text("Aimbot"); ImGui::SameLine(); ImGui::ToggleButton("#aimtoggle", &settings::aimBot);
+					if (settings::aimBot)
+					{
+						ImGui::HotKey("Aim Key", &keybinds::aimkey, ImVec2(200, 20));
+						ImGui::Text("Silent Aim"); ImGui::SameLine(); ImGui::ToggleButton("#silenttoggle", &settings::aim::silent);
+						ImGui::Text("Movement Prediction"); ImGui::SameLine(); ImGui::ToggleButton("#predicttoggle", &settings::aim::move_prediction);
+						ImGui::Text("Target Wounded"); ImGui::SameLine(); ImGui::ToggleButton("#woundedtoggle", &settings::aim::target_wounded);
+						ImGui::Text("Target Sleeping"); ImGui::SameLine(); ImGui::ToggleButton("#sleeptoggle", &settings::aim::target_sleeping);
+						ImGui::Text("Target NPC"); ImGui::SameLine(); ImGui::ToggleButton("#npctoggle", &settings::aim::target_npc);
+						ImGui::Text("Aim Bone"); ImGui::SameLine(); ImGui::Combo(" ", &selected, options, IM_ARRAYSIZE(options));
+						ImGui::SliderFloat("#aimfovslider", &settings::aim::fov, 5, 500, "%.3f", 0);
+						//ImGui::Text("Aim Bone"); ImGui::SameLine(); ImGui::Combo(" ", &selectedBone, options, IM_ARRAYSIZE(options));
+					}
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Exploits"))
+				{
+					ImGui::Text("Admin Flags"); ImGui::SameLine(); ImGui::ToggleButton("#flagtoggle", &settings::adminFlags);
+					ImGui::Text("Spiderman"); ImGui::SameLine(); ImGui::ToggleButton("#spidertoggle", &settings::Spiderman);
+					ImGui::Text("Super Jump"); ImGui::SameLine(); ImGui::ToggleButton("#supertoggle", &settings::superJump);
+					ImGui::Text("Walk on Water"); ImGui::SameLine(); ImGui::ToggleButton("#watertoggle", &settings::waterWalk);
+					ImGui::Text("Shoot While Mounted"); ImGui::SameLine(); ImGui::ToggleButton("#mounttoggle", &settings::heliShoot);
+					ImGui::Text("No Heavy/Visor"); ImGui::SameLine(); ImGui::ToggleButton("#heavytoggle", &settings::noHeavy);
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("ESP"))
+				{
+					ImGui::Text("ESP"); ImGui::SameLine(); ImGui::ToggleButton("#esptoggle", &settings::esp);
+					if (settings::esp)
+					{
+						ImGui::Text("Show Health Bar"); ImGui::SameLine(); ImGui::ToggleButton("#healthtoggle", &settings::ESP::show_health);
+						ImGui::Text("Show Name"); ImGui::SameLine(); ImGui::ToggleButton("#nametoggle", &settings::ESP::show_name);
+						ImGui::Text("Show Distance"); ImGui::SameLine(); ImGui::ToggleButton("#disttoggle", &settings::ESP::show_distance);
+						ImGui::Text("Show Wounded"); ImGui::SameLine(); ImGui::ToggleButton("#ewoundedtoggle", &settings::ESP::show_wounded);
+						ImGui::Text("Show Sleeping"); ImGui::SameLine(); ImGui::ToggleButton("#esleeptoggle", &settings::ESP::show_sleeping);
+						ImGui::Text("Show NPC"); ImGui::SameLine(); ImGui::ToggleButton("#enpctoggle", &settings::ESP::show_npc);
+						ImGui::Text("ESP Distance:");
+						ImGui::SliderFloat("#espdistslider", &settings::ESP::esp_distance, 50, 400, "%.3f", 0);
+					}
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Visuals"))
+				{
+					ImGui::Text("FOV Changer"); ImGui::SameLine(); ImGui::ToggleButton("#fovtoggle", &settings::FOVChanger);
+					if (settings::FOVChanger)
+						ImGui::SliderFloat("#fovslider", &settings::fov, 10, 150, "%.3f", 0);
+					ImGui::Text("Time Changer"); ImGui::SameLine(); ImGui::ToggleButton("#timetoggle", &settings::timeChanger);
+					if (settings::timeChanger)
+						ImGui::SliderFloat("#timeslider", &settings::time, 0, 24, "%.3f", 0);
+					ImGui::Text("Full Bright"); ImGui::SameLine(); ImGui::ToggleButton("#brighttoggle", &settings::full_bright);
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Weapon Mods"))
+				{
+					ImGui::Text("Recoil Control"); ImGui::SameLine(); ImGui::ToggleButton("#recoiltoggle", &settings::noRecoil);
+					if (settings::noRecoil)
+						ImGui::SliderFloat("#recoilslider", &settings::recoilPercentage, 0, 100, "%.3f", 0);
+					ImGui::Text("No Spread"); ImGui::SameLine(); ImGui::ToggleButton("#spreadtoggle", &settings::noSpread);
+					ImGui::Text("No Sway"); ImGui::SameLine(); ImGui::ToggleButton("#swaytoggle", &settings::noSway);
+					ImGui::Text("Force Auto"); ImGui::SameLine(); ImGui::ToggleButton("#autotoggle", &settings::automatic);
+					ImGui::Text("Super Eoka"); ImGui::SameLine(); ImGui::ToggleButton("#eokatoggle", &settings::superEoka);
+					ImGui::TreePop();
+				}
+			}
+			ImGui::PopStyleColor(12);
+			ImGui::End();
+		}
+		else
+		{
+			SetWindowLong(Window, GWL_EXSTYLE, WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_LAYERED);
 		}
 
 		ImGui::EndFrame();
@@ -283,15 +427,6 @@ namespace drawing {
 			GetCursorPos(&p);
 			io.MousePos.x = (float)p.x - (float)xy.x;
 			io.MousePos.y = (float)p.y - (float)xy.y;
-
-			if (GetAsyncKeyState(VK_LBUTTON)) {
-				io.MouseDown[0] = true;
-				io.MouseClicked[0] = true;
-				io.MouseClickedPos[0].x = io.MousePos.x;
-				io.MouseClickedPos[0].x = io.MousePos.y;
-			}
-			else
-				io.MouseDown[0] = false;
 
 			if (rc.left != old_rc.left || rc.right != old_rc.right || rc.top != old_rc.top || rc.bottom != old_rc.bottom)
 			{

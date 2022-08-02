@@ -11,9 +11,6 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{d43526be-82f2-44c4-ac6f-9f7eea2b1f31}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\imgui">
-      <UniqueIdentifier>{72df033e-3c52-4742-ab76-9523bb22841e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\auth">
       <UniqueIdentifier>{0269800f-c325-461b-9970-14a3d64afb67}</UniqueIdentifier>
     </Filter>
@@ -23,28 +20,31 @@
     <Filter Include="Source Files\Drawing\dxsdk">
       <UniqueIdentifier>{3e85e744-d8eb-46cf-828c-da7c618f716c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawing\imgui">
+      <UniqueIdentifier>{72df033e-3c52-4742-ab76-9523bb22841e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_dx9.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
@@ -97,31 +97,28 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_dx9.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_win32.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Source Files\imgui</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Source Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="menu.hpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Drawing\imgui</Filter>
     </ClInclude>
     <ClInclude Include="xor.hpp">
       <Filter>Source Files\Utils</Filter>
