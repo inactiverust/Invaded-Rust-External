@@ -64,7 +64,7 @@ namespace Aim
 				travelled += speed * time_step;
 				time += time_step;
 			}
-			Vector3 velocity = memory::read<Vector3>((uintptr_t)vars::AimPlayer->player_model() + 0x224) * 0.75f;
+			Vector3 velocity = memory::read<Vector3>((uintptr_t)vars::AimPlayer->player_model() + 0x224);
 
 			if (velocity.y > 0.f)
 				velocity.y /= 3.25;
@@ -99,16 +99,17 @@ namespace Aim
 		{
 			Vector2 ScreenPos;
 			Vector3 tempPos = vars::playerList[i]->player_model()->get_position();
-			tempPos.y += 1.f;
 			Vector3 playerPos = pointers::local_player->player_model()->get_position();
+			tempPos.y += 1.f;
 			world_to_screen(tempPos, ScreenPos);
+			Sleep(0);
+			float distance = Calc3D_Dist(playerPos, tempPos);
 			float fov = Calc2D_Dist(Vector2(misc::width / 2, misc::height / 2), ScreenPos);
-			if (fov < min_fov && fov < settings::aim::fov && fov > 0)
+			if (fov < min_fov && fov < settings::aim::fov && fov > 0 && distance < settings::aim::aim_distance)
 			{
 				returnPlayer = vars::playerList[i];
 				min_fov = fov;
 			}
-
 		}
 		vars::AimPlayer = returnPlayer;
 	}

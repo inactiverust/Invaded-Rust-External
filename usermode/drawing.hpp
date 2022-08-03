@@ -273,14 +273,19 @@ namespace drawing {
 
 		if (settings::ESP::show_panel)
 		{
+			std::string name = "Name: " + vars::aim_player_info.name;
+			std::string distance = "Distance: " + std::to_string(vars::aim_player_info.distance);
+			std::string HP = "Health: " + std::to_string(vars::aim_player_info.hp);
 			ImGuiShapes::draw_filled_rect(ImVec2(Width * 0.95, Height * 0.05), ImVec2(Width * 0.85, Height * 0.2), ImVec4(.25, .25, .25, 1), 0.f);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06), ImVec4(1, 1, 1, 1), vars::aim_player_info.name.c_str(), 0, false);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 15), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[0].c_str(), 0, false);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 30), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[1].c_str(), 0, false);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 45), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[2].c_str(), 0, false);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 60), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[3].c_str(), 0, false);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 75), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[4].c_str(), 0, false);
-			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 90), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[5].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06), ImVec4(1, 1, 1, 1), name.c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 15), ImVec4(1, 1, 1, 1), distance.c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 30), ImVec4(1, 1, 1, 1), HP.c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 45), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[0].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 60), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[1].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 75), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[2].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 90), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[3].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 105), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[4].c_str(), 0, false);
+			ImGuiShapes::draw_center_text(ImVec2(Width * 0.855, Height * 0.06 + 120), ImVec4(1, 1, 1, 1), vars::aim_player_info.slot[5].c_str(), 0, false);
 		}
 		ImGui::End();
 
@@ -321,6 +326,8 @@ namespace drawing {
 						ImGui::Text("Aim Bone"); ImGui::SameLine(); ImGui::Combo(" ", &selected, options, IM_ARRAYSIZE(options));
 						ImGui::Text("Aimbot FOV:");
 						ImGui::SliderFloat("#aimfovslider", &settings::aim::fov, 5, 500, "%.3f", 0);
+						ImGui::Text("Aimbot Distance:");
+						ImGui::SliderFloat("#aimdistslider", &settings::aim::aim_distance, 50, 400, "%.3f", 0);
 						switch (selected)
 						{
 						case 0:
@@ -366,13 +373,13 @@ namespace drawing {
 				}
 				if (ImGui::TreeNode("Visuals"))
 				{
+					ImGui::Text("Bright Night"); ImGui::SameLine(); ImGui::ToggleButton("#brighttoggle", &settings::full_bright);
 					ImGui::Text("FOV Changer"); ImGui::SameLine(); ImGui::ToggleButton("#fovtoggle", &settings::FOVChanger);
 					if (settings::FOVChanger)
 						ImGui::SliderFloat("#fovslider", &settings::fov, 10, 150, "%.3f", 0);
 					ImGui::Text("Time Changer"); ImGui::SameLine(); ImGui::ToggleButton("#timetoggle", &settings::timeChanger);
 					if (settings::timeChanger)
 						ImGui::SliderFloat("#timeslider", &settings::time, 0, 24, "%.3f", 0);
-					ImGui::Text("Full Bright"); ImGui::SameLine(); ImGui::ToggleButton("#brighttoggle", &settings::full_bright);
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("Weapon Mods"))

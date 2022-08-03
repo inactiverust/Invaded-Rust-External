@@ -40,12 +40,6 @@ bool get_local_player()
 	return false;
 }
 
-void get_cham_mats()
-{
-	pointers::cham_mats::world = memory::read_chain(pointers::game_assembly, { classes::oOutlineManager, 0xB8, 0x0 });
-	pointers::cham_mats::white = memory::read_chain((uintptr_t)pointers::tod_sky_instance, { 0xA8, 0x1A0, 0x78 });
-	pointers::cham_mats::black = memory::read_chain((uintptr_t)pointers::tod_sky_instance, { 0xA8, 0x1A0, 0x88 });
-}
 
 void setup()
 {
@@ -57,7 +51,7 @@ void setup()
 	pointers::view_matrix_pointer = reinterpret_cast<Matrix4x4*>(memory::read_chain(pointers::game_assembly, { classes::oMainCamera, 0xB8, 0x0, 0x10 }) + 0x2E4);
 	pointers::occlusion_culling_static = reinterpret_cast<OcclusionCulling*>(memory::read_chain(pointers::game_assembly, { classes::oOcclusionCulling, 0xB8 }));
 	pointers::occlusion_culling_static->disable_animals();
-	get_cham_mats();
+	
 }
 
 void esp()
@@ -88,10 +82,6 @@ void esp()
 			}
 			else
 			{
-				if (settings::chams && Player->player_model()->is_npc() == false)
-				{
-					Player->player_model()->set_cham(0);
-				}
 				if (settings::aimBot)
 				{
 					if (!settings::aim::target_sleeping && Player->has_flag(BasePlayer::player_flags::Sleeping))
@@ -151,7 +141,10 @@ void fill_player_info()
 		PlayerInfo* info = &vars::aim_player_info;
 		if (vars::AimPlayer)
 		{
+			info->hp = vars::AimPlayer->get_health();
+			info->distance = Calc3D_Dist(vars::AimPlayer->player_model()->get_position(), pointers::local_player->player_model()->get_position());
 			info->name = vars::AimPlayer->get_name();
+			
 			uintptr_t inventory = memory::read<uintptr_t>((uintptr_t)vars::AimPlayer + oInventory);
 			uintptr_t belt = memory::read<uintptr_t>(inventory + 0x28);
 			uintptr_t item_list = memory::read<uintptr_t>(belt + 0x38);
@@ -176,6 +169,16 @@ void fill_player_info()
 				info->slot[i] = "";
 			}
 		}
+		else
+		{
+			info->name = "None";
+			info->hp = 0;
+			info->distance = 0;
+			for (int i = 0; i < 6; i++)
+			{
+				info->slot[i] = "";
+			}
+		}
 	}
 }
 void cheat_entry()
@@ -190,28 +193,36 @@ void cheat_entry()
 	if (!features::disable_commands())
 	{
 		ShowWindow(GetConsoleWindow(), SW_SHOW);
-		std::cout << _("Error 1");
+		std::cout << _("Error 2");
 		Sleep(3000);
 		exit(3);
 	}
-
+	int counter = 0;
+	std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
 	while (true) {
 		esp();
 		if(pointers::local_player)
 		{
-			fill_player_info();
-			features::admin_flag();
-			features::change_time();
+			auto stop = std::chrono::high_resolution_clock::now();
+			if (std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() > 50)
+			{
+				counter++;
+				start = std::chrono::high_resolution_clock::now();
+				fill_player_info();
+				features::admin_flag();
+				features::change_time();
+				features::fov_changer();
+				features::no_sway();
+				features::weapon_mods();
+				features::shoot_heli();
+				features::no_heavy();
+				features::full_bright();
+			}
+			
 			features::spiderman();
 			features::super_jump();
-			features::fov_changer();
-			features::no_sway();
-			features::weapon_mods();
-			features::full_bright();
-			features::aim_bot();
-			features::no_heavy();
 			features::water_walk();
-			features::shoot_heli();
+			features::aim_bot();
 		}
 	}
 }

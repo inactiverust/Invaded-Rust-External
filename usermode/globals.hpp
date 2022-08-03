@@ -26,6 +26,8 @@ struct DrawingInfo
 struct PlayerInfo
 {
 	std::string name;
+	float distance;
+	float hp;
 	std::string slot[6];
 };
 
@@ -35,6 +37,7 @@ namespace vars
 	BasePlayer* AimPlayer;
 	std::vector<BasePlayer*> playerList;
 	std::vector<DrawingInfo> playerPosList;
+	std::vector<BasePlayer*> set_players;
 	PlayerInfo aim_player_info;
 }
 
@@ -86,6 +89,7 @@ namespace settings {
 		bool target_npc = false;
 		bool vischeck = false;
 		bool silent = false;
+		float aim_distance = 200.f;
 		BasePlayer::bone_list aim_bone = BasePlayer::bone_list::head;
 	}
 	namespace ESP

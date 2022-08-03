@@ -24,7 +24,7 @@ public:
 		{
 			uintptr_t pMaterialDict = memory::read<uintptr_t>(entry + 0x10);
 			int count = memory::read<int>(pMaterialDict + 0x150);
-			if (count > 0 && count < 40)
+			if (count > 0 && count < 5)
 			{
 				uint64_t MaterialDictionaryBase = memory::read<uint64_t>(pMaterialDict + 0x140);
 				if (!MaterialDictionaryBase)

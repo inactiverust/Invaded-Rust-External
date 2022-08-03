@@ -12,7 +12,16 @@ namespace features
 		if (settings::noHeavy)
 			pointers::local_player->remove_heavy_effects();
 	}
-
+	void do_chams()
+	{
+		if (settings::chams)
+		{
+			for (auto& player : vars::playerList)
+			{
+				vars::AimPlayer->player_model()->set_cham(0);
+			}
+		}
+	}
 	bool disable_commands()
 	{
 		int counter = 0;
@@ -97,12 +106,26 @@ namespace features
 			pointers::local_player->player_movement()->set_ground_time(99999.f);
 		}
 	}
+	bool do_once = false;
 	void full_bright()
 	{
+		uintptr_t ambient_parameters = memory::read<uintptr_t>((uintptr_t)pointers::tod_sky_instance + 0x90);
 		if (settings::full_bright)
 		{
-			pointers::tod_sky_instance->set_ambient_mult_night(3);
-			pointers::tod_sky_instance->set_ambient_mult_day(1);
+			if (do_once)
+			{
+				memory::write<float>(ambient_parameters + 0x18, 0.01f);
+				pointers::admin_convar_static->set_admin_time(12);
+				Sleep(50);
+				memory::write<float>(ambient_parameters + 0x18, 5.f);
+				do_once = false;
+			}
+			memory::write<float>((uintptr_t)pointers::tod_sky_instance + 0x234, 0.f);
+		}
+		else
+		{
+			memory::write<float>(ambient_parameters + 0x18, 0.01f);
+			do_once = true;
 		}
 
 	}
