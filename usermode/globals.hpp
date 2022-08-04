@@ -20,6 +20,7 @@ struct DrawingInfo
 	std::string name;
 	int distance;
 	float health;
+	float max_health;
 	bool isTarget;
 };
 
@@ -47,6 +48,7 @@ namespace pointers
 	uintptr_t fov_pointer;
 	Matrix4x4* view_matrix_pointer;
 	BasePlayer* local_player;
+	BasePlayer* current_cham_player;
 	AdminConVar* admin_convar_static;
 	Sky* tod_sky_instance;
 	OcclusionCulling* occlusion_culling_static;

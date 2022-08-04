@@ -200,6 +200,8 @@ public:
 	/* BasePlayer Accessors */
 	float get_health() { return memory::read<float>(reinterpret_cast<uintptr_t>(this) + oHealth); }
 
+	float get_max_health() { return memory::read<float>(reinterpret_cast<uintptr_t>(this) + oMaxHealth); }
+
 	bool is_dead() { return memory::read<bool>(reinterpret_cast<uintptr_t>(this) + oLifestate); }
 
 	bool has_flag(player_flags flag) 

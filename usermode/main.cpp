@@ -10,9 +10,9 @@
 
 bool should_exit;
 
-#define check_rust false
-#define check_auth false
-#define using_signed false
+#define check_rust true
+#define check_auth true
+#define using_signed true
 
 bool get_local_player()
 {
@@ -94,12 +94,15 @@ void esp()
 				}
 				label:
 				if (settings::esp)
-				{
+				{	
+					if (Player->is_dead())
+						continue;
+					bool is_npc = Player->player_model()->is_npc();
 					if (!settings::ESP::show_sleeping && Player->has_flag(BasePlayer::player_flags::Sleeping))
 						continue;
 					else if (!settings::ESP::show_wounded && Player->has_flag(BasePlayer::player_flags::Wounded))
 						continue;
-					else if (!settings::ESP::show_npc && Player->player_model()->is_npc())
+					else if (!settings::ESP::show_npc && is_npc)
 						continue;
 
 					DrawingInfo info;
@@ -125,6 +128,10 @@ void esp()
 						info.isTarget = false;
 
 					info.health = Player->get_health();
+					if (is_npc)
+						info.max_health = Player->get_max_health();
+					else
+						info.max_health = 100;
 
 					temp_info.push_back(info);
 				}
@@ -181,6 +188,7 @@ void fill_player_info()
 		}
 	}
 }
+
 void cheat_entry()
 {
 	while (!should_exit)
@@ -197,6 +205,7 @@ void cheat_entry()
 		Sleep(3000);
 		exit(3);
 	}
+
 	int counter = 0;
 	std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
 	while (true) {
@@ -218,7 +227,6 @@ void cheat_entry()
 				features::no_heavy();
 				features::full_bright();
 			}
-			
 			features::spiderman();
 			features::super_jump();
 			features::water_walk();

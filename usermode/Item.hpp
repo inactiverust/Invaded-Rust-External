@@ -111,7 +111,6 @@ public:
 
 		return info;
 	}
-
 	uintptr_t get_item_id()
 	{
 		return memory::read<uintptr_t>(reinterpret_cast<uintptr_t>(this) + oItemID);

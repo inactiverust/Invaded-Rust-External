@@ -1,5 +1,6 @@
 #pragma once
-#define iauth false
+#define iauth true
+
 #if iauth
 namespace classes
 {
@@ -14,31 +15,30 @@ namespace classes
 #else
 namespace classes
 {
-	uint64_t oBaseEntity = 52692400;  //BaseEntity_c*
-	uint64_t oAdminConVar = 52687640; //ConVar_Admin_c*
-	uint64_t oTODSky = 52706616; //TOD_Sky_c*
-	uint64_t oGraphicConVar = 52698272; //ConVar_Graphics_c*
-	uint64_t oOcclusionCulling = 52696992; //OcclusionCulling_c*
-	uint64_t oConsoleSystem = 52756896; //ConsoleSystem_Index_c*
-	uint64_t oMainCamera = 52699584; //MainCamera_c*
-	uint64_t oOutlineManager = 52608720; //OutlineManager_c*
+	uint64_t oBaseEntity = 52898488;  //BaseEntity_c*
+	uint64_t oAdminConVar = 52893784; //ConVar_Admin_c*
+	uint64_t oTODSky = 52912736; //TOD_Sky_c*
+	uint64_t oGraphicConVar = 52904424; //ConVar_Graphics_c*
+	uint64_t oOcclusionCulling = 52903136; //OcclusionCulling_c*
+	uint64_t oConsoleSystem = 52962984; //ConsoleSystem_Index_c*
+	uint64_t oMainCamera = 52905720; //MainCamera_c*
 }
 #endif
 
-#define oPlayerFlags 0x688
-#define oPlayerModel 0x4c8
-#define oPlayerInput 0x4e8
-#define oNeedsClothesRebuild 0x528
-#define oLifestate 0x224
+#define oPlayerFlags 0x690
+#define oPlayerModel 0x4d0
+#define oNeedsClothesRebuild 0x530
+#define oLifestate 0x224 
 #define oHealth 0x22c
-#define oPlayerWalkMovement 0x4F0
-#define oClothingAccuracyBonus 0x764
-#define oActiveItem 0x5D0
-#define oInput 0x4e8
-#define oInventory 0x698
-#define oPlayerEyes 0x690
+#define oMaxHealth 0x230 
+#define oPlayerWalkMovement 0x4f8
+#define oClothingAccuracyBonus 0x76c
+#define oActiveItem 0x5d8
+#define oInput 0x4f0
+#define oInventory 0x6a0
+#define oPlayerEyes 0x698
 #define oModel 0x130
-#define oDisplayName 0x6e8
+#define oDisplayName 0x6f0
 
 #define oTransforms 0x48
 
@@ -63,9 +63,6 @@ namespace classes
 #define oIsLocalPlayer 0x299
 #define oIsNPC 0x320
 #define oIsVisible 0x288
-
-#define oSkinType 0x1cc
-#define oMaleSkin 0x1a0
 
 #define oTimeSinceAmbientUpdate 0x234
 #define oSunVisibility 0xE4

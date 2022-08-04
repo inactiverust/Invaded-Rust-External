@@ -246,12 +246,9 @@ namespace drawing {
 
 			if (info.isTarget)
 			{
-				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(menu_settings::aim_target_color.x, menu_settings::aim_target_color.y, menu_settings::aim_target_color.z, 1), 1.25f);
+				ImGuiShapes::draw_line(ImVec2(ScreenCenterX, ScreenCenterY), ImVec2(info.HeadScreenPos.x, info.HeadScreenPos.y + (info.ToeScreenPos.y - info.HeadScreenPos.y)/2), ImVec4(menu_settings::aim_target_color.x, menu_settings::aim_target_color.y, menu_settings::aim_target_color.z, 1), 1.f);
 			}
-			else
-			{
-				ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(menu_settings::normal_esp_color.x, menu_settings::normal_esp_color.y, menu_settings::normal_esp_color.z, 1), 1.25f);
-			}
+			ImGuiShapes::draw_rect(ImVec2(x, y), ImVec2(x + bwidth, y + bheight), ImVec4(menu_settings::normal_esp_color.x, menu_settings::normal_esp_color.y, menu_settings::normal_esp_color.z, 1), 1.25f);
 
 			if (settings::ESP::show_name && settings::ESP::show_distance)
 			{
@@ -268,7 +265,7 @@ namespace drawing {
 			}
 
 			if(settings::ESP::show_health)
-				ImGuiShapes::draw_line(ImVec2(x + bwidth * 1.25, y + bheight), ImVec2(x + bwidth * 1.25, (y + bheight) - bheight * (info.health / 100.f)), ImVec4(0, 1, 0, 1), bwidth / 20.f);
+				ImGuiShapes::draw_line(ImVec2(x + bwidth * 1.25, y + bheight), ImVec2(x + bwidth * 1.25, (y + bheight) - bheight * (info.health / info.max_health)), ImVec4(0, 1, 0, 1), bwidth / 20.f);
 		}
 
 		if (settings::ESP::show_panel)

@@ -12,16 +12,6 @@ namespace features
 		if (settings::noHeavy)
 			pointers::local_player->remove_heavy_effects();
 	}
-	void do_chams()
-	{
-		if (settings::chams)
-		{
-			for (auto& player : vars::playerList)
-			{
-				vars::AimPlayer->player_model()->set_cham(0);
-			}
-		}
-	}
 	bool disable_commands()
 	{
 		int counter = 0;

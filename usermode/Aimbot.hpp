@@ -64,7 +64,7 @@ namespace Aim
 				travelled += speed * time_step;
 				time += time_step;
 			}
-			Vector3 velocity = memory::read<Vector3>((uintptr_t)vars::AimPlayer->player_model() + 0x224);
+			Vector3 velocity = memory::read<Vector3>((uintptr_t)vars::AimPlayer->player_model() + 0x23c) * 0.75;
 
 			if (velocity.y > 0.f)
 				velocity.y /= 3.25;
