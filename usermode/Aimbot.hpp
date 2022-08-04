@@ -121,7 +121,7 @@ namespace Aim
 		Vector3 AimPos = vars::AimPlayer->get_position(settings::aim::aim_bone);
 		Vector3 PlayerPos = pointers::local_player->get_position(BasePlayer::bone_list::head);
 		Vector2 angles = CalcAngle(PlayerPos, prediction(AimPos, PlayerPos));
-		if (angles.x == 0 || angles.y == 0)
+		if (angles.x == 0 || angles.y == 0 || isnan(angles.x) || isnan(angles.y))
 			return;
 		Vector4 quat = to_quat(Vector3(angles.x, angles.y, 0));
 		pointers::local_player->set_br(quat);

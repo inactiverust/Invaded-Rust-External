@@ -99,4 +99,4 @@ namespace classes
 #define oModelFlags 0x24
 
 #define oCanWeildItem 0x2B8
-#define oBaseMountable 0x600
+#define oBaseMountable 0x608
