@@ -105,6 +105,7 @@ namespace settings {
 		bool show_panel = false;
 		float esp_distance = 200.f;
 	}
+	bool connected;
 }
 namespace menu_settings
 {

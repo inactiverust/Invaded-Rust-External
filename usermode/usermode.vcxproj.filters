@@ -171,6 +171,9 @@
     <ClInclude Include="dxsdk\defs.h">
       <Filter>Source Files\Drawing\dxsdk</Filter>
     </ClInclude>
+    <ClInclude Include="menu.hpp">
+      <Filter>Source Files\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="dxsdk\d3dx9math.inl">

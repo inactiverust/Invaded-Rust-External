@@ -7,7 +7,7 @@
 #include "auth/auth.hpp"
 
 #include "drawing.hpp"
-
+#include "menu.hpp"
 bool should_exit;
 
 #define check_rust true
@@ -93,7 +93,7 @@ void esp()
 					vars::playerList.push_back(Player);
 				}
 				label:
-				if (settings::esp)
+				if (false)
 				{	
 					if (Player->is_dead())
 						continue;
@@ -217,7 +217,7 @@ void cheat_entry()
 			{
 				counter++;
 				start = std::chrono::high_resolution_clock::now();
-				fill_player_info();
+				//fill_player_info();
 				features::admin_flag();
 				features::change_time();
 				features::fov_changer();
@@ -226,6 +226,7 @@ void cheat_entry()
 				features::shoot_heli();
 				features::no_heavy();
 				features::full_bright();
+				features::esp();
 			}
 			features::spiderman();
 			features::super_jump();
@@ -249,7 +250,7 @@ void load_drv()
 	system("CLS");
 	VM_DOLPHIN_BLACK_END
 }
-
+/*
 void draw()
 {
 	while (!hwnd)
@@ -260,9 +261,10 @@ void draw()
 	drawing::InitializeD3D();
 	drawing::loop();
 }
+*/
 int main()
 {
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)draw, 0, 0, 0);
+	//CreateThread(0, 0, (LPTHREAD_START_ROUTINE)draw, 0, 0, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
 
 #if check_rust
@@ -297,11 +299,13 @@ int main()
 	}
 #endif
 
-	drawing::get_hwnd();
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)menu::render, 0, 0, 0);
+
+	//drawing::get_hwnd();
 	
 	for (;;)
 	{
-		if (GetAsyncKeyState(VK_INSERT) != 0)
+		if (settings::connected)
 			break;
 		Sleep(1);
 	}

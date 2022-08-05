@@ -196,6 +196,7 @@
     <ClInclude Include="math.hpp" />
     <ClInclude Include="memory.hpp" />
     <ClInclude Include="common.hpp" />
+    <ClInclude Include="menu.hpp" />
     <ClInclude Include="OcclusionCulling.hpp" />
     <ClInclude Include="offsets.hpp" />
     <ClInclude Include="PlayerModel.hpp" />

@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include "dxsdk/d3d9.h"
 #include "dxsdk/d3dx9.h"
 #include "dxsdk/d3d9_x.h"
@@ -294,7 +294,34 @@ namespace drawing {
 
 		if (toggle)
 		{
-			SetWindowLong(Window, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_LAYERED);
+			RECT rc;
+			POINT xy;
+
+			ZeroMemory(&rc, sizeof(RECT));
+			ZeroMemory(&xy, sizeof(POINT));
+			GetClientRect(hwnd, &rc);
+			ClientToScreen(hwnd, &xy);
+			rc.left = xy.x;
+			rc.top = xy.y;
+
+			ImGuiIO& io = ImGui::GetIO();
+			io.ImeWindowHandle = hwnd;
+			io.DeltaTime = 1.0f / 60.0f;
+			POINT p;
+			GetCursorPos(&p);
+			io.MousePos.x = (float)p.x - (float)xy.x;
+			io.MousePos.y = (float)p.y - (float)xy.y;
+
+			if (GetAsyncKeyState(VK_LBUTTON)) {
+				io.MouseDown[0] = true;
+				io.MouseClicked[0] = true;
+				io.MouseClickedPos[0].x = io.MousePos.x;
+				io.MouseClickedPos[0].x = io.MousePos.y;
+			}
+			else
+				io.MouseDown[0] = false;
+
+
 			ImGui::Begin("Invaded", 0, 0);
 			{
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.612, 0.f, 0.f, 1.f));
@@ -407,10 +434,6 @@ namespace drawing {
 			ImGui::PopStyleColor(12);
 			ImGui::End();
 		}
-		else
-		{
-			SetWindowLong(Window, GWL_EXSTYLE, WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_LAYERED);
-		}
 
 		ImGui::EndFrame();
 
@@ -499,3 +522,4 @@ namespace drawing {
 	}
 
 }
+*/

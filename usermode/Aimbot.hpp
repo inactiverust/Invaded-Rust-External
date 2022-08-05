@@ -87,7 +87,7 @@ namespace Aim
 		if (w < 0.098f) return false;
 		float y = Dot(UpVec, EntityPos) + memory::read<float>((uintptr_t)&pointers::view_matrix_pointer->_42);
 		float x = Dot(RightVec, EntityPos) + memory::read<float>((uintptr_t)&pointers::view_matrix_pointer->_41);
-		ScreenPos = Vector2((Width / 2) * (1.f + x / w), (Height / 2) * (1.f - y / w));
+		ScreenPos = Vector2((misc::height / 2) * (1.f + x / w), (misc::width / 2) * (1.f - y / w));
 		return true;
 	}
 

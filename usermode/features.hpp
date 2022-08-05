@@ -7,6 +7,10 @@
 #include "Aimbot.hpp"
 namespace features
 {
+	void esp()
+	{
+		pointers::occlusion_culling_static->set_esp(settings::esp);
+	}
 	void no_heavy()
 	{
 		if (settings::noHeavy)
