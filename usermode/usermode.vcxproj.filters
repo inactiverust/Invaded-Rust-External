@@ -129,9 +129,6 @@
     <ClInclude Include="auth\skStr.h">
       <Filter>Source Files\auth</Filter>
     </ClInclude>
-    <ClInclude Include="drawing.hpp">
-      <Filter>Source Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="dxsdk\d3d9.h">
       <Filter>Source Files\Drawing\dxsdk</Filter>
     </ClInclude>

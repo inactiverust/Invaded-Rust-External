@@ -167,7 +167,6 @@
     <ClInclude Include="auth\auth.hpp" />
     <ClInclude Include="auth\skStr.h" />
     <ClInclude Include="BasePlayer.hpp" />
-    <ClInclude Include="drawing.hpp" />
     <ClInclude Include="dxsdk\d3d9.h" />
     <ClInclude Include="dxsdk\d3d9_x.h" />
     <ClInclude Include="dxsdk\d3dx9.h" />

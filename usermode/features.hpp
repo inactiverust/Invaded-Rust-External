@@ -31,10 +31,10 @@ namespace features
 			{
 				counter++;
 				memory::write<bool>(command + oAllowRunFromServer, false);
-				if (counter == 3)
-					return true;
 			}
 		}
+		if (counter == 3)
+			return true;
 		return false;
 	}
 	void fov_changer()

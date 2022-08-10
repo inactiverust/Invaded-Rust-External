@@ -11,6 +11,7 @@ namespace misc
 {
 	float width;
 	float height;
+	uintptr_t struct_offset = 140699370414968;
 }
 
 struct DrawingInfo
@@ -35,6 +36,7 @@ struct PlayerInfo
 namespace vars
 {
 	uint32_t target_pid;
+	uint32_t drawing_pid;
 	BasePlayer* AimPlayer;
 	std::vector<BasePlayer*> playerList;
 	std::vector<DrawingInfo> playerPosList;
@@ -84,7 +86,7 @@ namespace settings {
 	float fov = 120.f;
 	namespace aim
 	{
-		float fov = 300.f;
+		float fov = 500.f;
 		bool move_prediction = false;
 		bool target_wounded = false;
 		bool target_sleeping = false;

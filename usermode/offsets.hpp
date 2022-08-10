@@ -15,13 +15,13 @@ namespace classes
 #else
 namespace classes
 {
-	uint64_t oBaseEntity = 52898568;  //BaseEntity_c*
-	uint64_t oAdminConVar = 52893848; //ConVar_Admin_c*
-	uint64_t oTODSky = 52912800; //TOD_Sky_c*
-	uint64_t oGraphicConVar = 52904480; //ConVar_Graphics_c*
-	uint64_t oOcclusionCulling = 52903208; //OcclusionCulling_c*
-	uint64_t oConsoleSystem = 52963048; //ConsoleSystem_Index_c*
-	uint64_t oMainCamera = 52905776; //MainCamera_c*
+	uint64_t oBaseEntity = 52889792;  //BaseEntity_c*
+	uint64_t oAdminConVar = 52885072; //ConVar_Admin_c*
+	uint64_t oTODSky = 52904040; //TOD_Sky_c*
+	uint64_t oGraphicConVar = 52895712; //ConVar_Graphics_c*
+	uint64_t oOcclusionCulling = 52894448; //OcclusionCulling_c*
+	uint64_t oConsoleSystem = 52954280; //ConsoleSystem_Index_c*
+	uint64_t oMainCamera = 52897032; //MainCamera_c*
 }
 #endif
 

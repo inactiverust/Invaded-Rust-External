@@ -6,13 +6,52 @@
 #include "auth/skStr.h"
 #include "auth/auth.hpp"
 
-#include "drawing.hpp"
 #include "menu.hpp"
+
 bool should_exit;
 
 #define check_rust true
 #define check_auth true
 #define using_signed true
+
+
+namespace drawing
+{
+	struct Draw_Input
+	{
+		Vector2 p1;
+		Vector2 p2;
+		float h;
+		float w;
+		float radius;
+		int type;
+	};
+
+	enum OperationType
+	{
+		clear,
+		rectangle,
+		line,
+		finished
+	};
+
+	void draw_comm()
+	{
+		Draw_Input clear;
+		clear.type = OperationType::clear;
+		memory::write_drawing(misc::struct_offset, clear);
+		std::vector<DrawingInfo> temp_drawing_list = vars::playerPosList;
+		for (auto& info : temp_drawing_list)
+		{
+			Draw_Input input;
+			const float height = info.ToeScreenPos.y - info.HeadScreenPos.y;
+			const float width = height / 2.f;
+			Vector2 point_1 = Vector2(info.ToeScreenPos.x - (width / 2.f), info.HeadScreenPos.y);
+			input.h = height; input.w = width; input.p1 = point_1; input.type = OperationType::rectangle;
+			memory::write_drawing(misc::struct_offset, input);
+		}
+	}
+}
 
 bool get_local_player()
 {
@@ -189,6 +228,7 @@ void fill_player_info()
 	}
 }
 
+
 void cheat_entry()
 {
 	while (!should_exit)
@@ -210,8 +250,10 @@ void cheat_entry()
 	std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
 	while (true) {
 		esp();
+		//drawing::draw_comm();
 		if(pointers::local_player)
 		{
+			
 			auto stop = std::chrono::high_resolution_clock::now();
 			if (std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() > 50)
 			{
@@ -250,21 +292,9 @@ void load_drv()
 	system("CLS");
 	VM_DOLPHIN_BLACK_END
 }
-/*
-void draw()
-{
-	while (!hwnd)
-	{
-		Sleep(1);
-	}
-	drawing::create_window();
-	drawing::InitializeD3D();
-	drawing::loop();
-}
-*/
+
 int main()
 {
-	//CreateThread(0, 0, (LPTHREAD_START_ROUTINE)draw, 0, 0, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)cheat_entry, 0, 0, 0);
 
 #if check_rust
@@ -300,8 +330,6 @@ int main()
 #endif
 
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)menu::render, 0, 0, 0);
-
-	//drawing::get_hwnd();
 	
 	for (;;)
 	{
@@ -311,6 +339,7 @@ int main()
 	}
 
 	vars::target_pid = memory::get_pid(_("RustClient.exe"));
+	//vars::drawing_pid = memory::get_pid(_("Cheat.exe"));
 
 	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));
 
@@ -321,11 +350,11 @@ int main()
 		Sleep(3000);
 		exit(3);
 	}
+
 	memory::setup(vars::target_pid);
+	//memory::setup_drawing(vars::drawing_pid);
 
 	should_exit = true;
 
 	memory::loop();
-	
-
 }
