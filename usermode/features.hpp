@@ -128,6 +128,14 @@ namespace features
 		if (settings::noSway)
 			pointers::local_player->set_accuracy(1.f);
 	}
+	void no_flash()
+	{
+		if (settings::noFlash)
+		{
+			uintptr_t flash_instance = memory::read_chain(pointers::game_assembly, { classes::oFlashbang, 0xB8, 0x0 });
+			memory::write<float>(flash_instance + 0x40, 0.f); //flashlength
+		}
+	}
 	void weapon_mods() {
 		if (settings::noRecoil)
 			pointers::local_player->get_active_weapon()->set_no_recoil(settings::recoilPercentage);

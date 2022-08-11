@@ -14,45 +14,6 @@ bool should_exit;
 #define check_auth true
 #define using_signed true
 
-
-namespace drawing
-{
-	struct Draw_Input
-	{
-		Vector2 p1;
-		Vector2 p2;
-		float h;
-		float w;
-		float radius;
-		int type;
-	};
-
-	enum OperationType
-	{
-		clear,
-		rectangle,
-		line,
-		finished
-	};
-
-	void draw_comm()
-	{
-		Draw_Input clear;
-		clear.type = OperationType::clear;
-		memory::write_drawing(misc::struct_offset, clear);
-		std::vector<DrawingInfo> temp_drawing_list = vars::playerPosList;
-		for (auto& info : temp_drawing_list)
-		{
-			Draw_Input input;
-			const float height = info.ToeScreenPos.y - info.HeadScreenPos.y;
-			const float width = height / 2.f;
-			Vector2 point_1 = Vector2(info.ToeScreenPos.x - (width / 2.f), info.HeadScreenPos.y);
-			input.h = height; input.w = width; input.p1 = point_1; input.type = OperationType::rectangle;
-			memory::write_drawing(misc::struct_offset, input);
-		}
-	}
-}
-
 bool get_local_player()
 {
 	uintptr_t buffer_list = memory::read_chain(pointers::game_assembly, { classes::oBaseEntity, 0xB8, 0x10, 0x10, 0x28 });
@@ -90,7 +51,6 @@ void setup()
 	pointers::view_matrix_pointer = reinterpret_cast<Matrix4x4*>(memory::read_chain(pointers::game_assembly, { classes::oMainCamera, 0xB8, 0x0, 0x10 }) + 0x2E4);
 	pointers::occlusion_culling_static = reinterpret_cast<OcclusionCulling*>(memory::read_chain(pointers::game_assembly, { classes::oOcclusionCulling, 0xB8 }));
 	pointers::occlusion_culling_static->disable_animals();
-	
 }
 
 void esp()
@@ -245,19 +205,15 @@ void cheat_entry()
 		Sleep(3000);
 		exit(3);
 	}
-
 	int counter = 0;
 	std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
 	while (true) {
 		esp();
-		//drawing::draw_comm();
 		if(pointers::local_player)
 		{
-			
 			auto stop = std::chrono::high_resolution_clock::now();
 			if (std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() > 50)
 			{
-				counter++;
 				start = std::chrono::high_resolution_clock::now();
 				//fill_player_info();
 				features::admin_flag();
@@ -268,12 +224,14 @@ void cheat_entry()
 				features::shoot_heli();
 				features::no_heavy();
 				features::full_bright();
+				features::no_flash();
 				features::esp();
 			}
 			features::spiderman();
 			features::super_jump();
 			features::water_walk();
 			features::aim_bot();
+
 		}
 	}
 }
@@ -339,7 +297,6 @@ int main()
 	}
 
 	vars::target_pid = memory::get_pid(_("RustClient.exe"));
-	//vars::drawing_pid = memory::get_pid(_("Cheat.exe"));
 
 	pointers::game_assembly = memory::find_base_address(vars::target_pid, _(L"GameAssembly.dll"));
 
@@ -352,7 +309,6 @@ int main()
 	}
 
 	memory::setup(vars::target_pid);
-	//memory::setup_drawing(vars::drawing_pid);
 
 	should_exit = true;
 

@@ -31,43 +31,6 @@ int draw_operation = 0;
 class memory
 {
 public:
-	static void setup_drawing(uint32_t pid)
-	{
-		dProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
-	}
-
-	static void d_wait_finish()
-	{
-		while (draw_operation != operation::finished)
-		{
-			std::this_thread::sleep_for(std::chrono::nanoseconds(0));
-		}
-	}
-
-	template <typename t>
-	static t read_drawing(uintptr_t base_address)
-	{
-		d_wait_finish();
-		t buffer{};
-		copy_parameters.lpBaseAddress = (void*)base_address;
-		copy_parameters.lpBuffer = &buffer;
-		copy_parameters.nSize = sizeof(buffer);
-		draw_operation = operation::read_drawing;
-		d_wait_finish();
-		return buffer;
-	}
-
-	template <typename t>
-	static void write_drawing(uintptr_t base_address, t buffer)
-	{
-		d_wait_finish();
-		copy_parameters.lpBaseAddress = (void*)base_address;
-		copy_parameters.lpBuffer = &buffer;
-		copy_parameters.nSize = sizeof(buffer);
-		draw_operation = operation::write_drawing;
-		d_wait_finish();
-	}
-
 	static std::string read_str(uintptr_t address, int size = STR_BUFFER_SIZE)
 	{
 		std::unique_ptr<char[]> buffer(new char[size]);

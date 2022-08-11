@@ -17,9 +17,6 @@
     <Filter Include="Source Files\Drawing">
       <UniqueIdentifier>{9bbd1a15-b81b-4545-a011-16cf6b2c88c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Drawing\dxsdk">
-      <UniqueIdentifier>{3e85e744-d8eb-46cf-828c-da7c618f716c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Drawing\imgui">
       <UniqueIdentifier>{72df033e-3c52-4742-ab76-9523bb22841e}</UniqueIdentifier>
     </Filter>
@@ -129,52 +126,8 @@
     <ClInclude Include="auth\skStr.h">
       <Filter>Source Files\auth</Filter>
     </ClInclude>
-    <ClInclude Include="dxsdk\d3d9.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3d9_x.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9anim.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9core.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9effect.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9math.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9mesh.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9shader.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9shape.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9tex.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\d3dx9xof.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
-    <ClInclude Include="dxsdk\defs.h">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </ClInclude>
     <ClInclude Include="menu.hpp">
       <Filter>Source Files\Drawing</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="dxsdk\d3dx9math.inl">
-      <Filter>Source Files\Drawing\dxsdk</Filter>
-    </None>
   </ItemGroup>
 </Project>

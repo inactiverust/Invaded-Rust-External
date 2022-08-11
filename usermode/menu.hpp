@@ -127,6 +127,7 @@ namespace menu
 						ImGui::Text("Walk on Water"); ImGui::SameLine(); ImGui::ToggleButton("#watertoggle", &settings::waterWalk);
 						ImGui::Text("Shoot While Mounted"); ImGui::SameLine(); ImGui::ToggleButton("#mounttoggle", &settings::heliShoot);
 						ImGui::Text("No Heavy/Visor"); ImGui::SameLine(); ImGui::ToggleButton("#heavytoggle", &settings::noHeavy);
+						ImGui::Text("No Flash"); ImGui::SameLine(); ImGui::ToggleButton("#flashtoggle", &settings::noFlash);
 						ImGui::TreePop();
 					}
 					if (ImGui::TreeNode("Visuals"))

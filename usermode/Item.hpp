@@ -40,6 +40,7 @@ uintptr_t get_component(uintptr_t game_object, const char* name_str)
 
 		uintptr_t name_ptr = memory::read<uintptr_t>(unk1);
 		std::string name = memory::read_str(memory::read<uintptr_t>(name_ptr + 0x10), 18);
+		std::cout << name << "\n";
 		if (!strcmp(name.c_str(), name_str))
 			return unk1;
 	}
@@ -50,7 +51,7 @@ uintptr_t get_component(uintptr_t game_object, const char* name_str)
 class Item
 {
 public:
-	
+
 	void set_shotgun_nospread()
 	{
 		uintptr_t base_projectile = memory::read<uintptr_t>(reinterpret_cast<uintptr_t>(this) + oHeldEnt);
@@ -63,7 +64,6 @@ public:
 		uintptr_t itemModProjectile = get_component(unity_class, _("ItemModProjectile"));
 		memory::write<float>(itemModProjectile + 0x30, 0.f);
 	}
-
 	//Clean Up
 	bullet_info getBulletInfo()
 	{

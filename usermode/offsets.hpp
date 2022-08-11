@@ -1,5 +1,5 @@
 #pragma once
-#define iauth true
+#define iauth false
 
 #if iauth
 namespace classes
@@ -11,6 +11,7 @@ namespace classes
 	uint64_t oOcclusionCulling = 0; //OcclusionCulling_c*
 	uint64_t oConsoleSystem = 0; //ConsoleSystem_Index_c*
 	uint64_t oMainCamera = 0; //MainCamera_c*
+	uint64_t oFlashbang = 0; //FlashbangOverlay_c*
 }
 #else
 namespace classes
@@ -22,6 +23,7 @@ namespace classes
 	uint64_t oOcclusionCulling = 52894448; //OcclusionCulling_c*
 	uint64_t oConsoleSystem = 52954280; //ConsoleSystem_Index_c*
 	uint64_t oMainCamera = 52897032; //MainCamera_c*
+	uint64_t oFlashbang = 52841384; //FlashbangOverlay_c*
 }
 #endif
 

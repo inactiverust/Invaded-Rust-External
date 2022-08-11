@@ -11,7 +11,7 @@ namespace misc
 {
 	float width;
 	float height;
-	uintptr_t struct_offset = 140699370414968;
+	uintptr_t struct_offset = 140701638288248;
 }
 
 struct DrawingInfo
@@ -79,6 +79,7 @@ namespace settings {
 	bool aimBot = false;
 	bool noSpread = false;
 	bool noHeavy = false;
+	bool noFlash = false;
 	bool esp = false;
 	bool full_bright = false;
 	float recoilPercentage = 100;
